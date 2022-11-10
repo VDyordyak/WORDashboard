@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static '/css/attendance.css' %}">
+{% endblock styles %}
+{% block content %}
+    <div>
+        <h2 class="page-title">Attendance (Week {{week}})</h2>
+    </div>
+    <table class="attendance_table">
+      <thead>
+        <tr class="headling">
+           <th>User name</th>
+           <th>Status choice</th>
+       </tr>
+      </thead>
+      <tbody>
+          {% for user in users %}
+            {% if user.groups.first in request.user.groups.all %}
+                {% if user.last_punch_week != week %}
+                    <tr>
+                        <td class="user_information">
+                            {{user.last_punch_week}} {{week}}
+                            <img src="{{user.user_image.url}}">
+                            <span class="performer_name">{{user.first_name}} </span>
+                            <span class="performer_surname">{{user.last_name}}</span>
+                        </td>
+                        <td>
+                            <form action="{% url 'attendance:status_change' user.pk %}" method="POST">
+                                {% csrf_token %}
+                                <button name="not_present" type="submit">NOT PRESENT</button>
+                                <button name="excused" type="submit">EXCUSED</button>
+                                <button name="on_vacation" type="submit">ON VACATION</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endif %}
+          {% endfor %}
+      </tbody>
+    </table>
+    <a href="#"><p class="show-more">Show attendance dashboard</p></a>
+    <h2>Dashboard</h2>
+    <div class="attendance_dashboard">
+        <table>
+            <tr>
+                <th style="width: 500px;">User name</th>
+                {% for week_dashboard in week_list %}
+                    {% if week_dashboard.week_number <= week %}
+                        <th>{{week_dashboard.week_number}}</th>
+                    {% endif %}   
+                {% endfor %}
+            </tr>
+            {% for user in users %}
+                {% if user.groups.first in request.user.groups.all %}
+                    <tr>
+                        <td class="user_information">
+                            <img src="{{user.user_image.url}}">
+                            <span class="performer_name">{{user.first_name}}</span>
+                            <span class="performer_surname">{{user.last_name}}</span>
+                        </td>
+                        {% for attendance in attendances %}
+                            {% if attendance.person.username == user.username %}
+                                <td class="{{attendance.user_status}}"></td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr> 
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+
+    <style>
+        .attendance_dashboard{
+            max-width:100%; 
+            overflow-x: scroll;
+        }
+        .attendance_dashboard .user_information{
+            min-width: 150px;
+        }
+        .attendance_dashboard .user_information img{
+            width:30px;
+            height: 30px;
+            text-align: left !important;
+        }
+        .attendance_dashboard td, .attendance_dashboard th{
+            text-align: center;
+            min-width: 30px;
+            min-height: 30px;
+            padding: 1px;
+            border: 1px solid black;
+        }
+        .attendance_dashboard .present{
+            background-color: green;
+        }
+        .attendance_dashboard .not_present{
+            background-color: red;
+        }
+        .attendance_dashboard .excused{
+            background-color: yellow;
+        }
+        .attendance_dashboard .on_vacation{
+            background-color: blue;
+        }
+    </style>
+{% endblock content %}

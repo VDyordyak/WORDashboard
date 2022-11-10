@@ -1,0 +1,494 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<!--
+    <form style="" method="POST">
+        {% csrf_token %}
+        {{ create_form.as_p }}
+        <input type="submit" value="Save" />
+    </form>
+-->
+<style>
+/* /////////////////////   GLOBAL CSS   \\\\\\\\\\\\\\\\\\\\\\ */
+a {text-decoration: none;}
+body {
+    background-color: lightgray;
+
+    /* margin-left: 15%;*/
+}
+header {
+    width: 18%;
+    position: fixed;
+    height: 100%;
+
+    padding: 0px 20px 0px 0px;
+    border-radius: 25px;
+}
+.red {
+    padding: 20px 20px 0px 20px;
+}
+.blue {
+    padding: 20px 20px 0px 0px;
+}
+.leader-engager {
+    background-color: white;
+    padding: 30px 50px 50px 50px;
+    border-radius: 5px;
+    margin-top: 20px 20px;
+}
+.menu-space {
+    width: 100%;
+}
+.menu {
+    /* margin: 0 20px; */
+    padding: 0px 0px 20px 20px;
+    background-color: white;
+    border-radius: 5px;
+    height: 100%;
+}
+.menu ul li{
+    padding: 20px 0 0 0;
+}
+
+    /*////////////////////////////// CONTENT  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+
+.page-title {
+    color: green;
+    font-size: 15px;
+    border-bottom: 2px solid green;
+    padding-bottom: 25px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    margin-bottom: 50px;
+}
+.btns{
+    float: right;
+    width: 12%;
+}
+.content-block {
+    background-color: white;
+    padding: 30px 50px 0px 50px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    /* height: 110%; */
+    padding-bottom: 50px;
+}
+.to-do, .in-progress, .review, .done {
+    display: inline-block;
+    width: 23%;
+    background-color: #F5F6F8;
+    padding: 8px 8px 8px 10px;
+    border-radius: 4px;
+    /* float: left;  */
+    vertical-align: top;
+}
+.to-do, .in-progress, .review {
+    margin-right: 10px;
+}
+.improvments-tasks {
+    width: 100%;
+}
+.task-content {
+    background-color: #fff;
+    padding: 16px;
+    height: 390px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 8px;
+}
+.task-text .topic {
+    padding-top: 20px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: #34220D;
+    height: 110px;
+    overflow: hidden;
+}
+.task-text .task-description {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    color: #34220D;
+    height: 114px;
+    overflow: hidden;
+}
+.date-status span {
+    font-size: 12px;
+    line-height: 28px;
+
+}
+.date-status .task-date{
+    float: right;
+    color: #34220D;
+}
+.dots {
+    padding-bottom: 5px;
+    padding-left: 10px;
+}
+.date-status .to-do-status{
+    color: #008FC7;
+    background: rgba(0, 143, 199, .2);
+    padding: 4px 8px;
+}
+.date-status .in-progress-status {
+    color: #DE3E88;
+    background: rgba(222, 62, 136, .2);
+    padding: 4px 8px;
+}
+.date-status .review-status {
+    color: #EB7506;
+    background: rgba(235, 117, 6, .2);
+    padding: 4px 8px;
+}
+.date-status .done-status {
+    color: #2E8025;
+    background: rgba(46, 128, 37, .2);
+    padding: 4px 8px;
+}
+.column {
+    padding-left: 10px;
+}
+.column:before {
+    content: "\A";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    right: 8px;
+    bottom: 3px;
+}
+.to-do .column:before {
+    background: #007CBA;
+}
+.in-progress .column:before {
+    background: #DE3E88;
+}
+.review .column:before {
+    background: #E8B100;
+}
+.done .column:before {
+    background: #2E8025;
+}
+.update {
+    padding-right: 5%;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: #A50064;
+}
+.add-task {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: #007CBA;
+}
+.members {
+    width: 100%;
+    border-top: 1px solid rgba(52, 34, 13, 0.3);
+    padding-top: 10px;
+}
+.members img {
+    padding-right: 8px;
+    border-radius: 50%;
+}
+.members img:first-of-type{
+    margin-left: 4%;
+}
+.dates {
+    padding-top: 16px;
+    margin-left: 6%;
+    font-size: 12px;
+    color: #34220D;
+    width: 100%;
+}
+.start-date::after {
+    content: "→";
+    width: 16px;
+    padding-right: 15%;
+    padding-left: 15%;
+}
+.show-more {
+    text-align: center;
+    font-weight: 500;
+    padding-top: 50px;
+    /* padding-bottom: 20px; */
+}
+
+@media (min-width: 1000px) {
+    .members img {
+        padding-right: 0;
+    }
+    .members {
+        height: 39px;
+        overflow: hidden;
+    }
+    .start-date::after {
+        padding-right: 10%;
+        padding-left: 10%;
+    }
+    .task-text .topic {
+        height: 103px;
+    }
+}
+@media (min-width: 1200px) {
+    .btns {
+        width: 16%;
+    }
+    .date-status span {
+        font-size: 10px;
+    }
+    .column {
+        font-size: 10px;
+    }
+    .start-date::after{
+        padding-right: 2%;
+        padding-left: 2%;
+    }
+    .dates {
+        font-size: 10px;
+        margin-left: 7%;
+    }
+    .task-text .task-description {
+        font-size: 12px;
+    }
+    .to-do, .in-progress, .review, .done {
+        width: 24%;
+    }
+    .to-do, .in-progress, .review {
+        margin-right: 7px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .members img {
+        padding-right: 3px;
+    }
+    .members {
+        height: 39px;
+        overflow: hidden;
+    }
+    .start-date::after {
+        padding-right: 10%;
+        padding-left: 10%;
+    }
+    .task-text .topic {
+        height: 103px;
+    }
+    .dates {
+        font-size: 12px;
+        margin-left: 3%;
+    }
+
+    .column {
+        font-size: 14px;
+    }
+    .column:before {
+        bottom: 3px;
+    }
+    .date-status span {
+        font-size: 12px;
+    }
+}
+@media (min-width: 1600px) {
+    .members img:first-of-type {
+        margin-left: 10%;
+    }
+    .members img {
+        padding-right: 5px;
+    }
+    .dates {
+        font-size: 14px;
+        margin-left: 10%;
+    }
+    .column {
+        font-size: 18px;
+    }
+    .column:before {
+        bottom: 4px;
+    }
+    .date-status span{
+        font-size: 14px;
+    }
+    .task-text .topic {
+        font-size: 16px;
+    }
+    .task-text .task-description {
+        font-size: 13px;
+    }
+}
+@media (min-width: 2000px) {
+    .page-title {
+        font-size: 22px;
+    }
+    .members img:first-of-type {
+        margin-left: 23%;
+    }
+    .dates {
+        margin-left: 17%;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .date-status span {
+        font-size: 18px;
+    }
+    .task-text .topic {
+        font-size: 18px;
+        line-height: 26px;
+    }
+    .task-text .task-description {
+        font-size: 16px;
+        line-height: 22px;
+    }
+    .column {
+        font-size: 24px;
+        font-weight: 500;
+    }
+    .column:before {
+        width: 8px;
+        height: 8px;
+    }
+    .btns span{
+        font-size: 20px;
+        line-height: 20px;
+    }
+    .btns img {
+        height: 16px;
+        position: relative;
+        bottom: 1px;
+    }
+}
+</style>
+<container id="body">
+    <div id="menu"> </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 col-lg-2">
+                <div class="menu-space"></div>
+            </div>
+            <div class="col-sm-9 col-md-10 col-lg-10 red">
+                <div class="content-block">
+                    <div>
+                        <div class="btns">
+                            <a href="#"><img src="{% static 'img/update.png' %}"> <span class="update">Update</span></a>
+                            <a href="#" style="float: right;"><img src="{% static 'img/add_btn.png' %}"> <span class="add-task">Add Task</span></a>
+                        </div>
+                        <h2 class="page-title">Improvements</h2>
+                    </div>
+                    <div class="to-do">
+                        <p class="column">TO DO</p>
+                        <div class="improvments-tasks">
+                            {% for improvement in improvements %}
+                                {% if improvement.group in request.user.groups.all %}
+                                    {% if improvement.status == 'to_do' %}
+                                        <div class="task-content">
+                                            <div class="date-status"><span class="to-do-status">TO DO</span> <span class="task-date">28.01.2021 <a href="#"><img class="dots" src="{% static 'img/dots.png' %}"></a></span></div>
+                                            <div class="task-text">
+                                                <p class="topic"><a href="{% url 'improvements:improvement_edit' improvement.pk %}"> {{improvement.title}} </a></p>
+                                                <p class="task-description">{{improvement.description}}</p>
+                                            </div>
+                                            <div class="members">
+                                                {% for user in improvement.assigned_user.all %}
+                                                    <img src="{{user.userprofilemodel.user_image}}">
+                                                {% endfor %}
+                                            </div>
+                                            <div class="dates">
+                                                <span class="start-date">{{improvement.start_date}}</span>
+                                                <span class="finish-date">{{improvement.deadline_date}}</span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="in-progress">
+                        <p class="column">IN PROGRESS</p>
+                        <div class="improvments-tasks">
+                            {% for improvement in improvements %}
+                                {% if improvement.group in request.user.groups.all %}
+                                    {% if improvement.status == 'in_progress' %}
+                                        <div class="task-content">
+                                            <div class="date-status"><span class="to-do-status">IN PROGRESS</span> <span class="task-date">28.01.2021 <a href="#"><img class="dots" src="{% static 'img/dots.png' %}"></a></span></div>
+                                            <div class="task-text">
+                                                <p class="topic"><a href="{% url 'improvements:improvement_edit' improvement.pk %}"> {{improvement.title}} </a></p>
+                                                <p class="task-description">{{improvement.description}}</p>
+                                            </div>
+                                            <div class="members">
+                                                {% for user in improvement.assigned_user.all %}
+                                                    <img src="{{user.userprofilemodel.user_image}}">
+                                                {% endfor %}
+                                            </div>
+                                            <div class="dates">
+                                                <span class="start-date">{{improvement.start_date}}</span>
+                                                <span class="finish-date">{{improvement.deadline_date}}</span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="review">
+                        <p class="column">REVIEW</p>
+                        <div class="improvments-tasks">
+                            {% for improvement in improvements %}
+                                {% if improvement.group in request.user.groups.all %}
+                                    {% if improvement.status == 'review' %}
+                                        <div class="task-content">
+                                            <div class="date-status"><span class="to-do-status">REVIEW</span> <span class="task-date">28.01.2021 <a href="#"><img class="dots" src="{% static 'img/dots.png' %}"></a></span></div>
+                                            <div class="task-text">
+                                                <p class="topic"><a href="{% url 'improvements:improvement_edit' improvement.pk %}"> {{improvement.title}} </a></p>
+                                                <p class="task-description">{{improvement.description}}</p>
+                                            </div>
+                                            <div class="members">
+                                                {% for user in improvement.assigned_user.all %}
+                                                    <img src="{{user.userprofilemodel.user_image}}">
+                                                {% endfor %}
+                                            </div>
+                                            <div class="dates">
+                                                <span class="start-date">{{improvement.start_date}}</span>
+                                                <span class="finish-date">{{improvement.deadline_date}}</span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="done">
+                        <p class="column">DONE</p>
+                        <div class="improvments-tasks">
+                            {% for improvement in improvements %}
+                                {% if improvement.group in request.user.groups.all %}
+                                    {% if improvement.status == 'done' %}
+                                        <div class="task-content">
+                                            <div class="date-status"><span class="to-do-status">DONE</span> <span class="task-date">28.01.2021 <a href="#"><img class="dots" src="{% static 'img/dots.png' %}"></a></span></div>
+                                            <div class="task-text">
+                                                <p class="topic"><a href="{% url 'improvements:improvement_edit' improvement.pk %}"> {{improvement.title}} </a></p>
+                                                <p class="task-description">{{improvement.description}}</p>
+                                            </div>
+                                            <div class="members">
+                                                {% for user in improvement.assigned_user.all %}
+                                                    <img src="{{user.userprofilemodel.user_image}}">
+                                                {% endfor %}
+                                            </div>
+                                            <div class="dates">
+                                                <span class="start-date">{{improvement.start_date}}</span>
+                                                <span class="finish-date">{{improvement.deadline_date}}</span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <a href="#"><p class="show-more">Show more</p></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</container>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+{% endblock content %}

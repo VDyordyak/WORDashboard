@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Actions{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/recognitions.css' %}">
+{% endblock styles %}
+{% block content %}
+    <div>
+        <h2 class="page-title">Recognition</h2>
+        <div class="all_stars">
+            <div class="stars initiative">
+                <p class="">Initiative</p>
+            </div>
+            <div class="stars ube">
+                <p class="">Understand business environment</p>
+            </div>
+            <div class="stars pwyp">
+                <p class="">Practice what you preach</p>
+            </div>
+            <div class="stars resut_focus">
+                <p class="">Resut focus</p>
+            </div>
+            <div class="stars know_yourself">
+                <p class="">Know Yourself</p>
+            </div>
+            <div class="stars proactive_cooperation">
+                <p class="">Proactive Cooperation</p>
+            </div>
+        </div>
+        <div class="sorting">
+            <span class="sort_by">Sort by: </span>
+            <div class="dropdown">
+                <button class="dropdown-select" type="button">
+                    Total stars
+                </button>
+                <div class="dropdown-select-menu">
+                    <button class="dropdown-select-item" type="button">
+                        Total stars
+                    </button>
+                    <button class="dropdown-select-item" type="button">
+                        <p class="initiative">Initiative</p>
+                    </button>
+                    <button class="dropdown-select-item" type="button">
+                        <p class="ube">Understand business..</p>
+                    </button>
+                    <button class="dropdown-select-item" type="button">
+                        <p class="pwyp">Practice what you pre..</p>
+                    </button>
+                    <button class="dropdown-select-item" type="button">
+                        <p class="resut_focus">Resut focus</p>
+                    </button>
+                    <button class="dropdown-select-item" type="button">
+                        <p class="know_yourself">Know Yourself</p>
+                    </button>
+                    <button class="dropdown-select-item" type="button">
+                        <p class="proactive_cooperation">Proactive Cooperation</p>
+                    </button>
+                </div>
+            </div> 
+        </div>
+    </div>     
+    <div class="recognition_block">
+        {% for recognition in recognition_list%}
+            {% if recognition.user_profile.groups.first == request.user.groups.first %}
+                <div class="recognition_item">
+                    <div class="member">
+                        <img src="{{recognition.user_profile.user_image.url}}">
+                        <span class="performer_name">{{recognition.user_profile.first_name}}</span>
+                        <span class="performer_surname">{{recognition.user_profile.last_name}}</span>
+                    </div>
+                    <div class="member_stars">
+                        <div class="star initiative">
+                            <img src="{% static '/img/star.svg' %}" name="initiative" id="{{recognition.id}}" class="star_click">
+                            <span name="initiative_{{recognition.id}}" id="{{recognition.id}}">{{recognition.initiative_value}}</span>
+                        </div>
+                        <div class="star ube">
+                            <img src="{% static '/img/star.svg' %}" name="ube" id="{{recognition.id}}" alt="" class="star_click">
+                            <span name="ube_{{recognition.id}}" id="{{recognition.id}}">{{recognition.understand_value}}</span>
+                        </div>
+                        <div class="star pwyp">
+                            <img src="{% static '/img/star.svg' %}" name="pwyp" id="{{recognition.id}}" alt="" class="star_click">
+                            <span name="pwyp_{{recognition.id}}" id="{{recognition.id}}">{{recognition.practice_value}}</span>
+                        </div>
+                        <div class="star resut_focus">
+                            <img src="{% static '/img/star.svg' %}" name="resut_focus" id="{{recognition.id}}" alt="" class="star_click">
+                            <span name="resut_focus_{{recognition.id}}" id="{{recognition.id}}">{{recognition.result_focus_value}}</span>
+                        </div>
+                        <div class="star know_yourself">
+                            <img src="{% static '/img/star.svg' %}" name="know_yourself" id="{{recognition.id}}" alt="" class="star_click">
+                            <span name="know_yourself_{{recognition.id}}" id="{{recognition.id}}">{{recognition.know_yourself_value}}</span>
+                        </div>
+                        <div class="star proactive_cooperation">
+                            <img src="{% static '/img/star.svg' %}" name="proactive_cooperation" id="{{recognition.id}}" alt="" class="star_click">
+                            <span name="proactive_cooperation_{{recognition.id}}" id="{{recognition.id}}">{{recognition.cooperation_value}}</span>
+                        </div>
+
+                    </div>
+                    <div class="total_stars">
+                        <span>Total:</span>
+                        <span name="total_stars_{{recognition.id}}">{{recognition.total_stars}}</span>
+                        <img class="dots" onclick="show_form('{{recognition.id}}')" src="{% static '/img/dots.png' %}">
+                    </div>
+                    <form  metod="POST" id="{{recognition.id}}" name ="form_{{recognition.id}}" class="stars_dropdown">
+                        {% csrf_token %}
+                        <div class="star">
+                            <button type="button" onclick="add('{{recognition.id}}','initiative')">
+                                <span>+</span>
+                            </button>
+                            <div class="initiative">
+                                <img src="{% static '/img/star.svg' %}"  alt="">
+                                <input name="initiative" type="text" value="{{recognition.initiative_value}}" readonly>
+                            </div>
+                            <button id="initiative" type="button" onclick="remove('{{recognition.id}}','initiative')">
+                                <span>-</span>
+                            </button>
+                        </div>
+                        <div class="star">
+                            <button type="button" onclick="add('{{recognition.id}}','ube')">
+                                <span>+</span>
+                            </button>
+                            <div class="ube">
+                                <img src="{% static '/img/star.svg' %}"  alt="">
+                                <input name="ube" type="text" value="{{recognition.understand_value}}" readonly>
+                            </div>
+                            <button type="button" onclick="remove('{{recognition.id}}','ube')">
+                                <span>-</span>
+                            </button>
+                        </div>
+                        <div class="star">
+                            <button type="button" onclick="add('{{recognition.id}}','pwyp')">
+                                <span>+</span>
+                            </button>
+                            <div class="pwyp">
+                                <img src="{% static '/img/star.svg' %}"  alt="">
+                                <input name="pwyp" type="text" value="{{recognition.practice_value}}" readonly>
+                            </div>
+                            <button type="button" onclick="remove('{{recognition.id}}','pwyp')">
+                                <span>-</span>
+                            </button>
+                        </div>
+                        <div class="star">
+                            <button type="button" onclick="add('{{recognition.id}}','resut_focus')">
+                                <span>+</span>
+                            </button>
+                            <div class="resut_focus">
+                                <img src="{% static '/img/star.svg' %}"  alt="">
+                                <input name="resut_focus" type="text" value="{{recognition.result_focus_value}}" readonly>
+                            </div>
+                            <button type="button" onclick="remove('{{recognition.id}}','resut_focus')">
+                                <span>- </span>
+                            </button>
+                        </div>
+                        <div class="star">
+                            <button type="button" onclick="add('{{recognition.id}}','know_yourself')">
+                                <span>+</span>
+                            </button>
+                            <div class="know_yourself">
+                                <img src="{% static '/img/star.svg' %}"  alt="">
+                                <input name="know_yourself" type="text" value="{{recognition.know_yourself_value}}" readonly>
+                            </div>
+                            <button type="button" onclick="remove('{{recognition.id}}','know_yourself')">
+                                <span>-</span>
+                            </button>
+                        </div>
+                        <div class="star">
+                            <button type="button" onclick="add('{{recognition.id}}','proactive_cooperation')">
+                                <span>+</span>
+                            </button>
+                            <div class="proactive_cooperation">
+                                <img src="{% static '/img/star.svg' %}"  alt="">
+                                <input name="proactive_cooperation" type="text" value="{{recognition.cooperation_value}}" readonly>
+                            </div>
+                            <button type="button" onclick="remove('{{recognition.id}}','proactive_cooperation')">
+                                <span>-</span>
+                            </button>
+                        </div>
+                        <div class="submitting_button">
+                            <button  class="submitting_form_button" id="{{recognition.id}}" type="submit"></button>
+                        </div>
+                    </form>
+                </div>
+            {% endif%}
+        {% endfor%}
+    </div>   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>     
+    <script>
+        //Updating recognition star using ajax
+        $('.star_click').click(function(){
+            $.ajax({
+                    type: "POST",
+                    url: '{% url "recognitions:recognition_page" %}',
+                    data: {
+                        'recognition_id': $(this).attr('id'),
+                        'operation':'add_star',
+                        'type_of_star': $(this).attr('name'),
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success: function(response) {
+                        span_name = response.type_of_star+'_'+response.recognition_id
+                        total_stars_name = "total_stars_"+response.recognition_id
+                        $("span[name="+span_name+"]").html(parseInt($("span[name="+span_name+"]").text())+1);
+                        $("span[name="+total_stars_name+"]").html(parseInt($("span[name="+total_stars_name+"]").text())+1);
+                        
+                        target_input = $("form[name=form_"+response.recognition_id+"]").children().children('.'+response.type_of_star+'').children('input')
+                        value= target_input.val();
+                        target_input.attr( "value", function( arr ) {
+                            return parseInt(value)+1;
+                        })
+                        
+                    },
+                    error : function(xhr,errmsg,err) {
+                        $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                            " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+
+                });
+
+        })
+        // Updating recognition via form
+        $(document).on('submit', '.stars_dropdown',function(e){
+            e.preventDefault();
+            this_initiative_input = $(this).children().children().children('input[name="initiative"]');
+            $.ajax({
+                type:'POST',
+                url:'{% url "recognitions:recognition_page" %}',
+                data:{
+                    recognition_id : $(this).attr("id"),
+                    initiative_value : $(this).children().children().children('input[name="initiative"]').val() ,
+                    understand_value : $(this).children().children().children('input[name="ube"]').val(), 
+                    practice_value : $(this).children().children().children('input[name="pwyp"]').val(),
+                    result_focus_value : $(this).children().children().children('input[name="resut_focus"]').val(),
+                    know_yourself_value : $(this).children().children().children('input[name="know_yourself"]').val(),
+                    cooperation_value : $(this).children().children().children('input[name="proactive_cooperation"]').val(),
+
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'update_recognition'
+                },
+                success:function(updated){
+                    // recognition elements updating
+                    $("span[name=initiative_"+updated.recognition_id+"]").html(updated.initiative_value);
+                    $("span[name=ube_"+updated.recognition_id+"]").html(updated.understand_value);
+                    $("span[name=pwyp_"+updated.recognition_id+"]").html(updated.practice_value);
+                    $("span[name=resut_focus_"+updated.recognition_id+"]").html(updated.result_focus_value);
+                    $("span[name=know_yourself_"+updated.recognition_id+"]").html(updated.know_yourself_value);
+                    $("span[name=proactive_cooperation_"+updated.recognition_id+"]").html(updated.cooperation_value);
+                    
+                    // total_stars updating
+                    total_stars_name = "total_stars_"+updated.recognition_id
+                    $("span[name="+total_stars_name+"]").html(updated.total_stars);
+
+                    // form hiding
+                    $("form[name=form_"+updated.recognition_id+"]").toggleClass('show_form');
+                },
+                error : function(xhr,errmsg,err) {
+                    $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                        " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+            })
+        });
+        $(".dropdown-select").click(function () {
+            $(".dropdown-select-menu").toggleClass("show");
+        });
+
+        function show_form(user_identificator){
+            let forms = document.getElementsByTagName('form');
+            for (let i = 0; i < forms.length; i++) {
+                if (forms[i].id == user_identificator){
+                    if (forms[i].classList.contains('show_form')){
+                        forms[i].classList.remove('show_form');
+                    } 
+                    else{
+                        for (let j = 0; j < forms.length; j++) {
+                            if (forms[j].classList.contains('show_form')){       
+                                forms[j].classList.remove('show_form');
+                            } 
+                        }
+                        forms[i].classList.add('show_form');
+                    }
+                }   
+            }
+        }
+
+        function add(user_id, type_of_star){
+            let elements = document.getElementsByTagName('input');
+            let parent_form = document.getElementById(user_id);
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].name == type_of_star){
+                    if (parent_form.id == elements[i].parentElement.parentElement.parentElement.id){
+                        elements[i].value= parseInt(elements[i].value)+1;
+                    }
+                }   
+            }
+        }
+        function remove(user_id, type_of_star){
+            let elements = document.getElementsByTagName('input');
+            let parent_form = document.getElementById(user_id);
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].name == type_of_star){
+                    if (parent_form.id == elements[i].parentElement.parentElement.parentElement.id){
+                        
+                        if (elements[i].value>0){
+                            elements[i].value= parseInt(elements[i].value)-1;
+                        }  
+                    }
+                }   
+            }
+        }
+    </script>
+{% endblock content %}

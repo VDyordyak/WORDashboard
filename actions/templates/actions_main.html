@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Actions{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/action.css' %}">
+{% endblock styles %}
+{% block content %}
+    <div>
+        <div class="btns">
+            <!-- <a href="#"><img src="{% static '/img/update.png' %}"> <span class="update">Update</span></a> -->
+            <a href="#popup" style="float: right;"><img src="{% static '/img/add_btn.png' %}"> <span class="add-task" onclick="openForm()">Add Task</span></a>
+        </div>
+        <h2 class="page-title">Actions</h2>
+
+    </div>
+    <table class="actions_table">
+        <tr class="headling">
+            <th>Date</th>
+            <th>Issue</th>
+            <th>Action</th>
+            <th>Solution</th>
+            <th class="filtering">Who?</th>
+            <th class="filtering">When?</th>
+            <th>Status</th>
+        </tr>
+        {% for action in actions %}
+            {% if action.action_group in request.user.groups.all  %}
+                {% if forloop.counter <= 5  %}
+                    <tr id="action_content">
+                        <td class="date">{{action.creation_date|date:"d.m.Y"}}</td>
+                        <td class="action_title">
+                            <a href="{% url 'actions:edit_action' action.pk %}" >{{action.issue_name}}</a>
+                        </td>
+                        <td class="action_text">{{action.action_text}}</td>
+                        <td class="action_solution">{{action.solution_text}}</td>
+                        <td class="members">
+                            {% if action.assigned_user.all.count == group_members %}
+                                <p> All </p>
+                            {% else %}
+                                {% for user in action.assigned_user.all %}
+                                    <img src="{{user.user_image.url}}">
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                        <td class="date">{{action.deadline_date|date:"d.m.Y"}}</td>
+                        <td class="status">
+                            {% if action.action_status == 'draft' %}
+                                <img id="1" src="{% static '/img/in_progress.svg' %}">
+                            {% elif action.action_status == 'completed' %}
+                                <img id="2" src="{% static '/img/done.svg' %}">
+                            {% else %}
+                                <img id="3" src="{% static '/img/cancel.svg' %}">
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr id="action_content" class="hiden" style="display: none;">
+                        <td class="date">{{action.creation_date|date:"d.m.Y"}}</td>
+                        <td class="action_title">
+                            <a href="{% url 'actions:edit_action' action.pk %}">{{action.issue_name}}</a>
+                        </td>
+                        <td class="action_text">{{action.action_text}}</td>
+                        <td class="action_solution">{{action.solution_text}}</td>
+                        <td class="members">
+                            {% if action.assigned_user.all.count == group_members %}
+                                <p> All </p>
+                            {% else %}
+                                {% for user in action.assigned_user.all %}
+                                    <img src="{{user.user_image.url}}">
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                        <td class="date">{{action.deadline_date|date:"d.m.Y"}}</td>
+                        <td class="status">
+                            {% if action.action_status == 'draft' %}
+                                <img src="{% static '/img/in_progress.svg' %}">
+                            {% elif action.action_status == 'completed' %}
+                                <img src="{% static '/img/done.svg' %}">
+                            {% else %}
+                                <img src="{% static '/img/cancel.svg' %}">
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </table>
+    
+    {% if action_number > 5  %}
+        <a href="#"><p class="show-more">Show more</p></a>
+    {% endif %}
+    <div class="form_container" id="popup">
+        <div class="action_form">
+            <h3 class="form-title">Adding action</h3>
+            <form id="action_creation_form" method="POST">
+                {% csrf_token %}
+                <fieldset class="checkboxes">
+                    <span class="label">Status</span>
+                    <div class="chebox_item in_progress">
+                        <input type="radio" id="in_progress" name="status" value="draft"
+                                checked>
+                        <label for="in_progress"><img src="{% static '/img/in_progress.svg' %}" alt="Cancel"></label>
+                    </div>
+
+                    <div class="chebox_item done">
+                        <input type="radio" id="done" name="status" value="completed">
+                        <label for="done"><img src="{% static '/img/done.svg' %}" alt="Cancel"></label>
+                    </div>
+
+                    <div class="chebox_item cancel">
+                        <input type="radio" id="cancel" name="status" value="canceled">
+                        <label for="cancel"><img src="{% static '/img/cancel.svg' %}" alt="Cancel"></label>
+                    </div>
+
+                </fieldset>
+                <div class="form_fields">
+                    <div class="deadline">
+                        <span class="label">When?</span>
+                        <input type="date" id="deadline_date">
+                    </div>
+                </div>
+                <div class="form_fields">
+                    <div class="action_form_title">
+                        <legend class="label">Issue</legend>
+                        <input type="text" placeholder="Text" id="issue_name">
+                    </div>
+                </div>
+                <div class="form_fields">
+                    <div class="action_form_action">
+                        <legend class="label">Action</legend>
+                        <input type="text" placeholder="Text" id="action_text">
+                    </div>
+                </div>
+                <div class="form_fields">
+                    <div class="action_form_solution">
+                        <legend class="label">Solution</legend>
+                        <input type="text" placeholder="Text" id="solution_text">
+                    </div>
+                </div>
+                <div class="form_fields">
+                    <fieldset class="action_form_perfromer">
+                        <span class="label">Performer</span>
+                        <div class="checkbox-dropdown">
+                            <ul class="checkbox-dropdown-list">
+                                <li>
+                                    <input type="checkbox" id="all_users" value="all" name="assigned_user">
+                                    <label for="all_users">
+                                        <img src="{% static '/img/default_user_image.png' %}">
+                                        <span class="performer_name">All</span>
+                                        <span class="performer_surname">Users</span>
+                                    </label>
+                                </li>
+                                {% for user in user_profile_list %}
+                                    {% if user.groups.first == request.user.groups.first %}
+                                    <li>
+                                        <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"/>
+                                        <label for="{{user.pk}}">
+                                            <img src="{{user.user_image.url}}">
+                                            <span class="performer_name">{{user.first_name}}</span>
+                                            <span class="performer_surname">{{user.last_name}}</span>
+                                        </label>
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="form_fields buttons">
+                    <button class="button confirm" type="submit">Confirm</button>
+                    <a  href="#"  onclick="closeForm()" class="cancel">Back to actions</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="form_container" id="popup-edit">
+        <div class="action_form_editing" id="form-editing">
+            <h3 class="form-title" style="text-align: center;">Editing action <span name="result"></span></h3>
+            {% for instance in actions %}
+                {% if instance.pk == 155 %}
+                    <form class="action_editing_form" id="{{instance.pk}}" method="POST" value="{{instance.pk}}">
+                        {% csrf_token %}
+                        <fieldset class="checkboxes">
+                            <span class="label">Status</span>
+                            <div class="chebox_item in_progress">
+                                <input type="radio" id="in_progress" name="status" value="draft"
+                                {% if instance.action_status == "draft" %}
+                                    checked
+                                {% endif%}
+                                >
+                                <label for="in_progress"><img src="{% static '/img/in_progress.svg' %}" alt="Cancel"></label>
+                            </div>
+
+                            <div class="chebox_item done">
+                                <input type="radio" id="done" name="status" value="completed"
+                                {% if instance.action_status == "completed" %}
+                                    checked
+                                {% endif%}
+                                >
+                                <label for="done"><img src="{% static '/img/done.svg' %}" alt="Cancel"></label>
+                            </div>
+
+                            <div class="chebox_item cancel">
+                                <input type="radio" id="cancel" name="status" value="canceled"
+                                {% if instance.action_status == "canceled" %}
+                                    checked
+                                {% endif%}
+                                >
+                                <label for="cancel"><img src="{% static '/img/cancel.svg' %}" alt="Cancel"></label>
+                            </div>
+
+                        </fieldset>
+                        <div class="form_fields">
+                            <div class="deadline">
+                                <span class="label">Deadline date</span>
+                                <input type="date" id="deadline_date" value='{{instance.deadline_date|date:"Y-m-d"}}'>
+                            </div>
+                        </div>
+                        <div class="form_fields">
+                            <div class="action_form_title">
+                                <legend class="label">Issue</legend>
+                                <input type="text" placeholder="Text" id="issue_name" value="{{instance.issue_name}}">
+                            </div>
+                        </div>
+                        <div class="form_fields">
+                            <div class="action_form_action">
+                                <legend class="label">Action</legend>
+                                <input type="text" placeholder="Text" id="action_text" value="{{instance.action_text}}">
+                            </div>
+                        </div>
+                        <div class="form_fields">
+                            <div class="action_form_solution">
+                                <legend class="label">Solution</legend>
+                                <input type="text" placeholder="Text" id="solution_text" value="{{instance.solution_text}}">
+                            </div>
+                        </div>
+                        <div class="form_fields">
+                            <fieldset class="action_form_perfromer">
+                                <span class="label">Performers</span>
+                                <div class="checkbox-dropdown">
+                                    <ul class="checkbox-dropdown-list">
+                                        {% for user in user_profile_list %}
+                                            {% if user.groups.first == request.user.groups.first %}
+                                                <li>
+                                                    <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"
+                                                    {% if user in instance.assigned_user.all%}
+                                                        checked
+                                                    {% endif%}
+                                                    >
+                                                    <label for="{{user.pk}}">
+                                                        <img src="{{user.user_image.url}}">
+                                                        <span class="performer_name">{{user.first_name}}</span>
+                                                        <span class="performer_surname">{{user.last_name}}</span>
+                                                    </label>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="user_images">
+                                    {% for user in instance.assigned_user.all %}
+                                        <img src="{{user.user_image.url}}">
+                                    {% endfor %}
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="form_fields edit_buttons">
+                            <button class="button confirm" type="submit">Confirm</button>
+                            <a  href="{% url 'actions:action_main' %}" class="cancel">Back to actions</a>
+                        </div>
+                    </form>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <script src="{% static '/js/action_form.js' %}"></script>      
+    <script>
+        function openForm() {
+            var element = document.getElementById("popup");
+            element.classList.add("show");
+        }
+        function closeForm() {
+            var element = document.getElementById("popup");
+            element.classList.remove("show");
+        }
+        $(document).on('submit', '#action_creation_form',function(e){
+            //e.preventDefault();
+            let status= $("input[type='radio'][name='status']:checked").val();
+            
+            var date = new Date($('#creation_date').val());
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+
+            creation_date = [year, month, day ].join('-');
+
+            var date = new Date($('#deadline_date').val());
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+
+            deadline_date = [year, month, day ].join('-');
+            
+            let issue_name = $('#issue_name').val();
+            let action_text = $('#action_text').val();
+            let solution_text = $('#solution_text').val();
+
+            let assigned_user = getCheckedBoxes('assigned_user').join();
+            $.ajax({
+                type:'POST',
+                url:'{% url "actions:action_main" %}',
+                data:{
+                    selected_status: status,
+                    creation_date: creation_date,
+                    deadline_date: deadline_date,
+                    issue_name: issue_name,
+                    action_text: action_text,
+                    solution_text: solution_text,
+                    assigned_user: assigned_user,
+
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'add'
+                },
+                success:function(json){
+                    document.getElementById("action_creation_form").reset();
+                    document.getElementById("popup").classList.remove('show');
+                },
+                error : function(xhr,errmsg,err) {
+                    $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                        " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+            });
+        });
+    </script>
+{% endblock content %}
