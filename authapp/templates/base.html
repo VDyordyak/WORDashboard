@@ -14,9 +14,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    {% block styles%}
+    {% block styles %}
 
-    {% endblock styles%}
+    {% endblock styles %}
     <title>WOR</title>
 
   </head>
@@ -68,12 +68,12 @@
                         {% endif %}
                           <a class="nav-link" href="{% url 'actions:action_main' %}"><span class="actions_image"></span><span class="actions">Actions</span></a>
                         </li>
-                        {% if request.path == "/improvments/" %}
+                        {% if request.path == "/improvements/" %}
                         <li class="nav-item active">
                         {% else %}
                         <li class="nav-item ">
                         {% endif %}
-                          <a class="nav-link" href="#"><span class="improvments_image"></span><span class="improvments">Improvments</span></a>
+                          <a class="nav-link" href="{% url 'improvements:improvements_main' %}"><span class="improvments_image"></span><span class="improvments">Improvments</span></a>
                         </li>
                         {% if request.path == "/recognitions/" %}
                         <li class="nav-item active">

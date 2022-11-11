@@ -1,13 +1,12 @@
-   /*////////////////////////////// CONTENT  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
-
-   .page-title {
-    color: green;
-    font-size: 15px;
-    border-bottom: 2px solid green;
-    padding-bottom: 25px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    margin-bottom: 50px;
+/*////////////////////////////// CONTENT  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+.page-title {
+color: green;
+font-size: 15px;
+border-bottom: 2px solid green;
+padding-bottom: 25px;
+font-weight: 700;
+margin-bottom: 16px;
+margin-bottom: 50px;
 }
 .btns{
     float: right; 
