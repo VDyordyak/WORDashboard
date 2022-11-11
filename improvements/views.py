@@ -3,18 +3,41 @@ from django.shortcuts import render, redirect
 from .models import *
 from authapp.models import UserModel
 from .forms import ImprovementCreateForm
+from django.http import JsonResponse
+import datetime
 
 # Create your views here.
 @login_required
 def improvements(request):
     improvement_create_form = ImprovementCreateForm(request.POST)
-    if improvement_create_form.is_valid():
-        improvement_create_form.save()
-        current_improvement = ImprovementsTaskManagerModel.objects.get(id=improvement_create_form.instance.pk)
-        current_improvement.action_group = request.user.groups.get(id='1')
-        current_improvement.save()
     improvements_list = ImprovementsTaskManagerModel.objects.all()
     user_profile_images = UserModel.objects.all()
+    response_data = {}
+
+    if request.POST.get('action') == 'add':
+        improvement_title = request.POST.get('title')
+        improvement_description = request.POST.get('description')
+        selected_status= request.POST.get('status')
+
+        start_date = request.POST.get('start_date')
+        deadline_date = request.POST.get('deadline_date')
+        
+        assigned_user_list = str(request.POST.get('assigned_users'))
+        assigned_user = assigned_user_list.split(',')
+
+        new_improvement = ImprovementsTaskManagerModel.objects.create(
+                creation_date = datetime.datetime.now(),
+
+                title = improvement_title,
+                description  = improvement_description,
+                status = selected_status, 
+
+                start_date = start_date,
+                deadline_date = deadline_date,
+                group = UserModel.objects.get(id = request.user.id).groups.first()
+            )
+        for user in assigned_user:
+            new_improvement.assigned_user.add(user)
     return render(request, 'improvements/templates/improvement.html', {'improvements': improvements_list, 'create_form': improvement_create_form, 'user_profile_list': user_profile_images})
 
 def change_status(request, pk):

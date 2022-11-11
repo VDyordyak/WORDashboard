@@ -174,106 +174,6 @@
             </form>
         </div>
     </div>
-    <div class="form_container" id="popup-edit">
-        <div class="action_form_editing" id="form-editing">
-            <h3 class="form-title" style="text-align: center;">Editing action <span name="result"></span></h3>
-            {% for instance in actions %}
-                {% if instance.pk == 155 %}
-                    <form class="action_editing_form" id="{{instance.pk}}" method="POST" value="{{instance.pk}}">
-                        {% csrf_token %}
-                        <fieldset class="checkboxes">
-                            <span class="label">Status</span>
-                            <div class="chebox_item in_progress">
-                                <input type="radio" id="in_progress" name="status" value="draft"
-                                {% if instance.action_status == "draft" %}
-                                    checked
-                                {% endif%}
-                                >
-                                <label for="in_progress"><img src="{% static '/img/in_progress.svg' %}" alt="Cancel"></label>
-                            </div>
-
-                            <div class="chebox_item done">
-                                <input type="radio" id="done" name="status" value="completed"
-                                {% if instance.action_status == "completed" %}
-                                    checked
-                                {% endif%}
-                                >
-                                <label for="done"><img src="{% static '/img/done.svg' %}" alt="Cancel"></label>
-                            </div>
-
-                            <div class="chebox_item cancel">
-                                <input type="radio" id="cancel" name="status" value="canceled"
-                                {% if instance.action_status == "canceled" %}
-                                    checked
-                                {% endif%}
-                                >
-                                <label for="cancel"><img src="{% static '/img/cancel.svg' %}" alt="Cancel"></label>
-                            </div>
-
-                        </fieldset>
-                        <div class="form_fields">
-                            <div class="deadline">
-                                <span class="label">Deadline date</span>
-                                <input type="date" id="deadline_date" value='{{instance.deadline_date|date:"Y-m-d"}}'>
-                            </div>
-                        </div>
-                        <div class="form_fields">
-                            <div class="action_form_title">
-                                <legend class="label">Issue</legend>
-                                <input type="text" placeholder="Text" id="issue_name" value="{{instance.issue_name}}">
-                            </div>
-                        </div>
-                        <div class="form_fields">
-                            <div class="action_form_action">
-                                <legend class="label">Action</legend>
-                                <input type="text" placeholder="Text" id="action_text" value="{{instance.action_text}}">
-                            </div>
-                        </div>
-                        <div class="form_fields">
-                            <div class="action_form_solution">
-                                <legend class="label">Solution</legend>
-                                <input type="text" placeholder="Text" id="solution_text" value="{{instance.solution_text}}">
-                            </div>
-                        </div>
-                        <div class="form_fields">
-                            <fieldset class="action_form_perfromer">
-                                <span class="label">Performers</span>
-                                <div class="checkbox-dropdown">
-                                    <ul class="checkbox-dropdown-list">
-                                        {% for user in user_profile_list %}
-                                            {% if user.groups.first == request.user.groups.first %}
-                                                <li>
-                                                    <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"
-                                                    {% if user in instance.assigned_user.all%}
-                                                        checked
-                                                    {% endif%}
-                                                    >
-                                                    <label for="{{user.pk}}">
-                                                        <img src="{{user.user_image.url}}">
-                                                        <span class="performer_name">{{user.first_name}}</span>
-                                                        <span class="performer_surname">{{user.last_name}}</span>
-                                                    </label>
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                                <div class="user_images">
-                                    {% for user in instance.assigned_user.all %}
-                                        <img src="{{user.user_image.url}}">
-                                    {% endfor %}
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div class="form_fields edit_buttons">
-                            <button class="button confirm" type="submit">Confirm</button>
-                            <a  href="{% url 'actions:action_main' %}" class="cancel">Back to actions</a>
-                        </div>
-                    </form>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div>
     <script src="{% static '/js/action_form.js' %}"></script>      
     <script>
         function openForm() {
@@ -327,6 +227,7 @@
                 success:function(json){
                     document.getElementById("action_creation_form").reset();
                     document.getElementById("popup").classList.remove('show');
+                    document.body.style.overflowY = "scroll";
                 },
                 error : function(xhr,errmsg,err) {
                     $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+

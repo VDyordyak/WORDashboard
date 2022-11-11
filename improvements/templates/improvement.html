@@ -121,7 +121,7 @@
                             <div class="date-status">
                                 <span class="done-status">DONE</span> 
                                 <span class="task-date">{{improvement.creation_date}}
-                                    <a href="#"><img class="dots" src="dots.png"></a>
+                                    <a href="{% url 'improvements:improvement_edit' improvement.pk %}"><img class="dots" src="{% static 'img/dots.png' %}"></a>
                                 </span>
                             </div>
                             <div class="task-text">
@@ -147,7 +147,7 @@
     <div class="form_container" id="popup">
         <div class="improvement_form">
             <h3 class="form-title">Adding an improvement</h3>
-            <form method="post">
+            <form method="post" id="improvement_creation_form">
                 {% csrf_token %}
                 <fieldset class="checkboxes">
                     <legend class="legend_label">Status</legend>
@@ -175,13 +175,13 @@
                 <div class="form_fields">
                     <div class="improvement_form_title">
                         <legend class="legend_label">Title</legend>
-                        <input type="text" placeholder="Text">
+                        <input type="text" id="improvement_title" placeholder="Text" required>
                     </div>
                 </div>
                 <div class="form_fields">
                     <div class="improvement_description">
                         <legend class="legend_label">Description</legend>
-                        <textarea placeholder="Describe improvement here..."></textarea>
+                        <textarea id="improvement_description" placeholder="Describe improvement here..." required></textarea>
                     </div>
                 </div>
                 <div class="form_fields">
@@ -203,8 +203,9 @@
                                         <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"/>
                                         <label for="{{user.pk}}">
                                             <img src="{{user.user_image.url}}">
+                                            <span>{{user.id}}</span>
                                             <span class="performer_name">{{user.first_name}}</span>
-                                            <span class="performer_surname">{{user.last_name}}</span>
+                                            <span class="performer_surname">{{user.last_name}}</span> 
                                         </label>
                                     </li>
                                     {% endif %}
@@ -215,9 +216,9 @@
                 </div>
                 <div class="form_fields timeline">
                     <legend class="legend_label">Timeline</legend>
-                    <input type="date" class="start_date">
+                    <input type="date" id="start_date" class="start_date" required>
                     <div class="arrow"> <img src="{% static 'img/arrow.png' %}" alt=""></div>
-                    <input type="date"class="deadline_date">   
+                    <input type="date" id="deadline_date" class="deadline_date" required>   
                 </div>
                 <div class="form_fields">
                     <button class="button confirm" type="submit">Confirm</button>
@@ -253,5 +254,102 @@
             content.classList.toggle("toggeled_content");
             header_space.classList.toggle("header_space");
         }
+        $("#all_users").click(function () {
+            var checkboxes = document.getElementsByName('assigned_user');
+            // loop over them all
+            if (checkboxes[1].checked == true){
+                for (var i=0; i<checkboxes.length; i++) {
+                    checkboxes[i].checked = false;
+                }
+            }
+            else{
+                for (var i=0; i<checkboxes.length; i++) {
+                    checkboxes[i].checked = true;
+                }
+            }
+        });
+        function getCheckedBoxes(chkboxName) {
+            var checkboxes = document.getElementsByName(chkboxName);
+            var checkboxesChecked = [];
+            // loop over them all
+            for (var i=0; i<checkboxes.length; i++) {
+                // And stick the checked ones onto an array...
+                if (checkboxes[i].checked) {
+                    if (checkboxes[i].value != "all"){
+                        checkboxesChecked.push(checkboxes[i].value);
+                    }
+                }
+            }
+            // Return the array if it is non-empty, or null
+            return checkboxesChecked.length > 0 ? checkboxesChecked : null;
+        }
+        function getUncheckedBoxes(chkboxName) {
+            var checkboxes = document.getElementsByName(chkboxName);
+            var checkboxesChecked = [];
+            // loop over them all
+            for (var i=0; i<checkboxes.length; i++) {
+                // And stick the checked ones onto an array...
+                if (checkboxes[i].checked == false) {
+                    checkboxesChecked.push(checkboxes[i].value);
+                }
+            }
+            // Return the array if it is non-empty, or null
+            return checkboxesChecked.length > 0 ? checkboxesChecked : null;
+        }
+        $(document).on('submit', '#improvement_creation_form',function(e){
+            //e.preventDefault();
+            let status= $("input[type='radio'][name='status']:checked").val();
+            
+            var date = new Date($('#start_date').val());
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+
+            start_date = [year, month, day ].join('-');
+
+            var date = new Date($('#deadline_date').val());
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+
+            deadline_date = [year, month, day ].join('-');
+            
+            let improvement_title = $('#improvement_title').val();
+            let improvement_description = $('#improvement_description').val();
+            let assigned_user = getCheckedBoxes('assigned_user').join();
+            alert(
+                'improvement_title :'+ improvement_title  + '; '+
+                'improvement_description:'+ improvement_description + '; '+
+                'status:'+ status + '; '+
+                'assigned_user:'+ assigned_user + '; '+
+                'start_date:'+ start_date + '; '+
+                'deadline_date:'+ deadline_date + '; '
+            );
+            $.ajax({
+                type:'POST',
+                url:"{% url 'improvements:improvements_main' %}",
+                data:{
+                    title : improvement_title,
+                    description: improvement_description,
+                    status: status,
+                    assigned_users: assigned_user,
+                    start_date: start_date,
+                    deadline_date: deadline_date,
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'add'
+                },
+                success:function(json){
+                    document.getElementById("action_creation_form").reset();
+                    document.getElementById("popup").classList.remove('show');
+                    document.body.style.overflowY = "scroll";
+                    alert(assigned_users)
+                },
+                error : function(xhr,errmsg,err) {
+                    $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                        " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+            });
+        });
     </script>
 {% endblock content %}
