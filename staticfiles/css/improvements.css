@@ -124,6 +124,10 @@ input[type=radio] + label {
 .chebox_item_done input[type=radio]:checked + label{
     border-color: #2e8025;
 }
+.checkbox-dropdown-list li{
+    padding: 1px;
+
+}
 .checkbox-dropdown-list img{
     border-radius: 50%;
     padding: 2px;
@@ -215,9 +219,9 @@ input[type=radio] + label {
 
 .checkbox-dropdown-list li label {
     display: block;
-    border-bottom: 1px solid silver;
     padding: 5px;
     margin: 2px 5px;
+    border-bottom: 1px solid silver;
     border-radius: 5px;
     transition: all 0.2s ease-out;
 }

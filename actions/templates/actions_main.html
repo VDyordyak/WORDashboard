@@ -158,11 +158,11 @@
                                         <label for="{{user.pk}}">
                                             <img src="{{user.user_image.url}}">
                                             <span class="performer_name">{{user.first_name}}</span>
-                                            <span class="performer_surname">{{user.last_name}}</span>
+                                            <span class="performer_surname">{{user.last_name}}</span> 
                                         </label>
                                     </li>
                                     {% endif %}
-                                {% endfor %}
+                                {% endfor %}         
                             </ul>
                         </div>
                     </fieldset>
@@ -186,6 +186,11 @@
             element.classList.remove("show");
             document.body.style.overflowY = "scroll";
         }
+        $("input[type='checkbox'][name='assigned_user']").click(function () {
+            if ($("input[type='checkbox']#all_users:checked") && $(this).attr("id")!='all_users'){
+                $("input[type='checkbox']#all_users").prop('checked',false);
+            }
+        });
         $(document).on('submit', '#action_creation_form',function(e){
             //e.preventDefault();
             let status= $("input[type='radio'][name='status']:checked").val();

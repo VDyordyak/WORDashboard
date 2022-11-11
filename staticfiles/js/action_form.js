@@ -1,7 +1,7 @@
 $("#all_users").click(function () {
     var checkboxes = document.getElementsByName('assigned_user');
     // loop over them all
-    if (checkboxes[0].checked == true == true){
+    if (checkboxes[0].checked == false){
         for (var i=0; i<checkboxes.length; i++) {
             checkboxes[i].checked = false;
         }

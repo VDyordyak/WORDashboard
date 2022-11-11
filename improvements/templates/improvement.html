@@ -203,7 +203,6 @@
                                         <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"/>
                                         <label for="{{user.pk}}">
                                             <img src="{{user.user_image.url}}">
-                                            <span>{{user.id}}</span>
                                             <span class="performer_name">{{user.first_name}}</span>
                                             <span class="performer_surname">{{user.last_name}}</span> 
                                         </label>
@@ -254,10 +253,15 @@
             content.classList.toggle("toggeled_content");
             header_space.classList.toggle("header_space");
         }
+        $("input[type='checkbox'][name='assigned_user']").click(function () {
+            if ($("input[type='checkbox']#all_users:checked") && $(this).attr("id")!='all_users'){
+                $("input[type='checkbox']#all_users").prop('checked',false);
+            }
+        });
         $("#all_users").click(function () {
             var checkboxes = document.getElementsByName('assigned_user');
             // loop over them all
-            if (checkboxes[1].checked == true){
+            if (checkboxes[0].checked == false){
                 for (var i=0; i<checkboxes.length; i++) {
                     checkboxes[i].checked = false;
                 }
