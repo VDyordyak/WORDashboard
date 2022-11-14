@@ -1,11 +1,10 @@
 from django.conf.urls.static import static
 from src import settings
 from django.urls import path, include
-from .views import actions, edit_actions
+from .views import actions
 
 urlpatterns = [
     path('', actions, name='action_main'),
-    path('edit/<int:pk>', edit_actions, name='edit_action'),
 ]
 
 if settings.DEBUG:

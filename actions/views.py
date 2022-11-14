@@ -16,6 +16,20 @@ def actions(request):
     action_number = ActionTaskManagerModel.objects.filter(action_group =  UserModel.objects.get(id = request.user.id).groups.first()).count()
     response_data = {}
     group_members_count =  UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first()).count()
+    
+    if request.method == "GET" and request.GET.get('action') == 'get_data':
+        action_pk = request.GET.get("action_pk", 1)
+        selected_action = ActionTaskManagerModel.objects.get(id = action_pk)
+        
+        response_data['action_pk'] = action_pk
+        response_data['issue_name'] = selected_action.issue_name
+        response_data['action_text'] = selected_action.action_text
+        response_data['solution_text'] = selected_action.solution_text
+        response_data['action_status'] = selected_action.action_status
+        response_data['assigned_users'] = selected_action.get_assigned_user()
+        response_data['deadline_date'] = selected_action.deadline_date
+
+        return JsonResponse(response_data)
 
     if request.POST.get('action') == 'add':
         selected_status= request.POST.get('selected_status')
@@ -45,22 +59,8 @@ def actions(request):
             new_action.assigned_user.add(user)
         return JsonResponse(response_data)
 
-    return render(request, 'actions_main.html', {
-        'actions': action_list, 
-        'user_profile_list': user_profile_list , 
-        'group_members': group_members_count,
-        'action_number': action_number
-        })
-
-
-def edit_actions(request, pk):
-    action_list = ActionTaskManagerModel.objects.all()
-    user_profile_list = UserModel.objects.all()
-    group_members_count =  UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first()).count()
-    changes = True
-
-    instance = ActionTaskManagerModel.objects.get(id=pk)
     if request.POST.get('action') == 'edit':
+        instance = ActionTaskManagerModel.objects.get(id=request.POST.get('action_pk'))
         selected_status = request.POST.get('selected_status')
         deadline_date = request.POST.get('deadline_date')
         issue_name = request.POST.get('issue_name')
@@ -91,6 +91,11 @@ def edit_actions(request, pk):
             except:
                 changed = False
         instance.save()
-        return HttpResponseRedirect(request.path_info)
+        return JsonResponse(response_data)
 
-    return render(request, 'actions/templates/action_edit_page.html', {'instance': instance,'user_profile_list': user_profile_list })
+    return render(request, 'actions_main.html', {
+        'actions': action_list, 
+        'user_profile_list': user_profile_list , 
+        'group_members': group_members_count,
+        'action_number': action_number
+        })

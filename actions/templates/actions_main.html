@@ -30,11 +30,11 @@
                     <tr id="action_content">
                         <td class="date">{{action.creation_date|date:"d.m.Y"}}</td>
                         <td class="action_title">
-                            <a href="{% url 'actions:edit_action' action.pk %}" >{{action.issue_name}}</a>
+                            <a href="#" class="title_click" id="{{action.pk}}">{{action.issue_name}}</a>
                         </td>
                         <td class="action_text">{{action.action_text}}</td>
                         <td class="action_solution">{{action.solution_text}}</td>
-                        <td class="members">
+                        <td class="members" id="members_for_{{action.pk}}">
                             {% if action.assigned_user.all.count == group_members %}
                                 <p> All </p>
                             {% else %}
@@ -58,11 +58,11 @@
                     <tr id="action_content" class="hiden" style="display: none;">
                         <td class="date">{{action.creation_date|date:"d.m.Y"}}</td>
                         <td class="action_title">
-                            <a href="{% url 'actions:edit_action' action.pk %}">{{action.issue_name}}</a>
+                            <a href="#" class="title_click" id="{{action.pk}}">{{action.issue_name}}</a>
                         </td>
                         <td class="action_text">{{action.action_text}}</td>
                         <td class="action_solution">{{action.solution_text}}</td>
-                        <td class="members">
+                        <td class="members" id="members_for_{{action.pk}}">
                             {% if action.assigned_user.all.count == group_members %}
                                 <p> All </p>
                             {% else %}
@@ -117,25 +117,25 @@
                 <div class="form_fields">
                     <div class="deadline">
                         <span class="label">When?</span>
-                        <input type="date" id="deadline_date">
+                        <input type="date" id="deadline_date" required>
                     </div>
                 </div>
                 <div class="form_fields">
                     <div class="action_form_title">
                         <legend class="label">Issue</legend>
-                        <input type="text" placeholder="Text" id="issue_name">
+                        <input type="text" placeholder="Text" id="issue_name" required>
                     </div>
                 </div>
                 <div class="form_fields">
                     <div class="action_form_action">
                         <legend class="label">Action</legend>
-                        <input type="text" placeholder="Text" id="action_text">
+                        <input type="text" placeholder="Text" id="action_text" required>
                     </div>
                 </div>
                 <div class="form_fields">
                     <div class="action_form_solution">
                         <legend class="label">Solution</legend>
-                        <input type="text" placeholder="Text" id="solution_text">
+                        <input type="text" placeholder="Text" id="solution_text" required>
                     </div>
                 </div>
                 <div class="form_fields">
@@ -174,6 +174,100 @@
             </form>
         </div>
     </div>
+    <div class="form_container" id="edit-popup">
+        <div class="action_form_editing">
+            <h3 class="form-title" style="text-align: center;">Editing action <span name="result"></span></h3>
+            <form id="action_editing_form" method="POST" value="">
+                {% csrf_token %}
+                <fieldset class="checkboxes">
+                    <span class="label">Status</span>
+                    <div class="chebox_item in_progress draft">
+                        <input type="radio" id="in_progress_edit" name="status" value="draft"
+                           {% if action.action_status == "draft" %}
+                            checked
+                           {% endif%}
+                        >
+                        <label for="in_progress_edit"><img src="{% static '/img/in_progress.svg' %}" alt="Cancel"></label>
+                    </div>
+
+                    <div class="chebox_item done completed">
+                        <input type="radio" id="done_edit" name="status" value="completed"
+                           {% if action.action_status == "completed" %}
+                              checked
+                           {% endif%}
+                        >
+                        <label for="done_edit"><img src="{% static '/img/done.svg' %}" alt="Cancel"></label>
+                    </div>
+
+                    <div class="chebox_item cancel canceled">
+                        <input type="radio" id="cancel_edit" name="status" value="canceled"
+                           {% if action.action_status == "canceled" %}
+                              checked
+                           {% endif%}
+                        >
+                        <label for="cancel_edit"><img src="{% static '/img/cancel.svg' %}" alt="Cancel"></label>
+                    </div>
+
+                </fieldset>
+                <div class="form_fields">
+                    <div class="deadline">
+                        <span class="label">Deadline date</span>
+                        <input type="date" id="deadline_date" value='{{action.deadline_date|date:"Y-m-d"}}' required>
+                    </div>
+                </div>
+                <div class="form_fields">
+                    <div class="action_form_title">
+                        <legend class="label">Issue</legend>
+                        <input type="text" placeholder="Text" id="issue_name" value="{{action.issue_name}}" required>
+                    </div>
+                </div>
+                <div class="form_fields">
+                    <div class="action_form_action">
+                        <legend class="label">Action</legend>
+                        <input type="text" placeholder="Text" id="action_text" value="{{action.action_text}}" required>
+                    </div>
+                </div>
+                <div class="form_fields">
+                    <div class="action_form_solution">
+                        <legend class="label">Solution</legend>
+                        <input type="text" placeholder="Text" id="solution_text" value="{{action.solution_text}}" required>
+                    </div>
+                </div>
+                <div class="form_fields">
+                    <fieldset class="action_form_perfromer">
+                        <span class="label">Performers</span>
+                        <div class="checkbox-dropdown">
+                            <ul class="checkbox-dropdown-list">
+                                {% for user in user_profile_list %}
+                                    {% if user.groups.first == request.user.groups.first %}
+                                        <li>
+                                            <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"
+                                            {% if user in action.assigned_user.all%}
+                                                checked
+                                            {% endif%}
+                                            >
+                                            <label for="{{user.pk}}">
+                                                <img src="{{user.user_image.url}}">
+                                                <span class="performer_name">{{user.first_name}}</span>
+                                                <span class="performer_surname">{{user.last_name}}</span>
+                                            </label>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="user_images">
+
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="form_fields edit_buttons">
+                    <button class="button confirm" type="submit">Confirm</button>
+                    <a  href="#" onclick="closeEditingForm()" class="cancel">Back to actions</a>
+                </div>
+            </form>
+        </div>
+    </div>
     <script src="{% static '/js/action_form.js' %}"></script>      
     <script>
         function openForm() {
@@ -186,23 +280,62 @@
             element.classList.remove("show");
             document.body.style.overflowY = "scroll";
         }
+        function closeEditingForm() {
+            var element = document.getElementById("edit-popup");
+            element.classList.remove("show");
+            document.body.style.overflowY = "scroll";
+        }
         $("input[type='checkbox'][name='assigned_user']").click(function () {
             if ($("input[type='checkbox']#all_users:checked") && $(this).attr("id")!='all_users'){
                 $("input[type='checkbox']#all_users").prop('checked',false);
             }
         });
+        $('.title_click').on("click", function(e) {
+            e.preventDefault();
+            // get the action id
+            var action_pk = $(this).attr("id");
+            // GET AJAX request
+            $.ajax({
+                type: 'GET',
+                url: '{% url "actions:action_main" %}',
+                data: {
+                    action_pk: action_pk,
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'get_data'
+                },
+                success: function (response) {
+                    var form = $("form#action_editing_form");
+                    form.attr("value", response.action_pk);
+                    form.children('.checkboxes').children('.'+response.action_status+'').children('input').prop('checked', true);
+                    form.children('.form_fields').children('.deadline').children('input').attr("value",response.deadline_date);
+                    form.children('.form_fields').children('.action_form_title').children('input').attr("value",response.issue_name);
+                    form.children('.form_fields').children('.action_form_action').children('input').attr("value",response.action_text);
+                    form.children('.form_fields').children('.action_form_solution').children('input').attr("value",response.solution_text);
+                    assigned_user_list = response.assigned_users.replace(/,/ , '')
+                    list_of_users = $('')
+                        form.find("input[type='checkbox']").prop('checked', false);
+                    for (id in assigned_user_list){
+                        form.find("input[type='checkbox']#"+assigned_user_list[id]+"").prop('checked', true);
+                    }
+                    
+                    var members_data = $("table.actions_table").children().children('#action_content').children('#members_for_'+response.action_pk+'');
+
+                    var element = document.getElementById("edit-popup");
+                    element.classList.add("show");
+                    document.body.style.overflowY = "hidden";
+                },
+                error : function(xhr,errmsg,err) {
+                    $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                        " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+            })
+        })
         $(document).on('submit', '#action_creation_form',function(e){
             //e.preventDefault();
             let status= $("input[type='radio'][name='status']:checked").val();
-            
-            var date = new Date($('#creation_date').val());
-            var day = date.getDate();
-            var month = date.getMonth() + 1;
-            var year = date.getFullYear();
 
-            creation_date = [year, month, day ].join('-');
-
-            var date = new Date($('#deadline_date').val());
+            var date = new Date($(this).children('.form_fields').children('.deadline').children('input').val());
             var day = date.getDate();
             var month = date.getMonth() + 1;
             var year = date.getFullYear();
@@ -218,12 +351,11 @@
                 type:'POST',
                 url:'{% url "actions:action_main" %}',
                 data:{
-                    selected_status: status,
-                    creation_date: creation_date,
+                    selected_status: $(this).find("input[type='radio'][name='status']:checked").val(),
                     deadline_date: deadline_date,
-                    issue_name: issue_name,
-                    action_text: action_text,
-                    solution_text: solution_text,
+                    issue_name: $(this).children('.form_fields').children('.action_form_title').children('input').val(),
+                    action_text: $(this).children('.form_fields').children('.action_form_action').children('input').val(),
+                    solution_text: $(this).children('.form_fields').children('.action_form_solution').children('input').val(),
                     assigned_user: assigned_user,
 
                     csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
@@ -233,6 +365,57 @@
                     document.getElementById("action_creation_form").reset();
                     document.getElementById("popup").classList.remove('show');
                     document.body.style.overflowY = "scroll";
+                },
+                error : function(xhr,errmsg,err) {
+                    $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                        " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+            });
+        });
+        $(document).on('submit', '#action_editing_form',function(e){
+            var date = new Date($(this).children('.form_fields').children('.deadline').children('input').val());
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+
+            deadline_date = [year, month, day ].join('-');           
+            
+            
+            let checkboxes= $(this).find("input[type='checkbox']")
+            var checkboxesChecked = [];
+            var checkboxesUnchecked = [];
+
+            for (var i=0; i<checkboxes.length; i++) {
+                // And stick the checked ones onto an array...
+                if (checkboxes[i].checked == false) {
+                    checkboxesUnchecked.push(checkboxes[i].value);
+                } else
+                if (checkboxes[i].checked == true){
+                    checkboxesChecked.push(checkboxes[i].value);
+                }
+            }
+            let unassigned_user = checkboxesUnchecked.join();
+            let assigned_user = checkboxesChecked.join();
+
+            $.ajax({
+                type:'POST',
+                url:'{% url "actions:action_main" %}',
+                data:{
+                    action_pk: $(this).attr('value'),
+                    selected_status: $(this).find("input[type='radio'][name='status']:checked").val(),
+                    deadline_date: deadline_date,
+                    issue_name: $(this).children('.form_fields').children('.action_form_title').children('input').val(),
+                    action_text: $(this).children('.form_fields').children('.action_form_action').children('input').val(),
+                    solution_text: $(this).children('.form_fields').children('.action_form_solution').children('input').val(),
+                    assigned_user: assigned_user,
+                    unassigned_user: unassigned_user,
+
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'edit'
+                },
+                success:function(json){
+                    $("span[name=result]").html("(saved)");
                 },
                 error : function(xhr,errmsg,err) {
                     $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
