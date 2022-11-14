@@ -29,14 +29,14 @@
     position: relative;
     margin: 1% auto;
 }
-.form-title {
+.improvement_form .form-title {
     color: green;
     font-size: 15px;
     border-bottom: 2px solid green;
     padding: 16px 24px 18px 24px;
     font-weight: 700;
 }
-.legend_label{
+.improvement_form .legend_label{
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 500;
@@ -48,12 +48,12 @@
     letter-spacing: 0.01em;
     text-transform: uppercase;
 }
-.form_fields{
+.improvement_form .form_fields{
     display: block;
     padding-top: 10px;
     width: 100%;
 }
-.form_fields input[type="text"],  .form_fields textarea{
+.improvement_form .form_fields input[type="text"],  .form_fields textarea{
     width: 100%;
     height: 30px;
     padding: 4px;
@@ -66,7 +66,7 @@
     font-size: 14px;
     line-height: 16px;
 }
-.form_fields textarea{
+.improvement_form .form_fields textarea{
     height: 60px;
     resize: none;
 }
@@ -85,10 +85,10 @@
     display: block;
     padding: 0px;              
 }
-input[type=radio]{
+.improvement_form input[type=radio]{
     display: none;
 }
-input[type=radio] + label {
+.improvement_form input[type=radio] + label {
     border: 2px solid #FFFFFF;
     border-radius: 4px;
     padding: 7px 16px;
@@ -112,53 +112,49 @@ input[type=radio] + label {
     color: #2e8025;
 }
 /*///////// Status checkboxes:checked ////////*/
-.chebox_item_to_do input[type=radio]:checked + label{
+.improvement_form .chebox_item_to_do input[type=radio]:checked + label{
     border-color: #008fc7;
 }
-.chebox_item_in_progress input[type=radio]:checked + label{
+.improvement_form .chebox_item_in_progress input[type=radio]:checked + label{
     border-color: #de3e89;
 }
-.chebox_item_review input[type=radio]:checked + label{
+.improvement_form .chebox_item_review input[type=radio]:checked + label{
     border-color: #ea7406;
 }
-.chebox_item_done input[type=radio]:checked + label{
+.improvement_form .chebox_item_done input[type=radio]:checked + label{
     border-color: #2e8025;
 }
-.checkbox-dropdown-list li{
-    padding: 1px;
-
-}
-.checkbox-dropdown-list img{
+.improvement_form .checkbox-dropdown-list img{
     border-radius: 50%;
     padding: 2px;
     width: 30px;
     height: 30px;
 }
-.checkbox-dropdown-list::-webkit-scrollbar {
+.improvement_form .checkbox-dropdown-list::-webkit-scrollbar {
     width: 8px; 
 }
-.checkbox-dropdown-list::-webkit-scrollbar-track{
+.improvement_form .checkbox-dropdown-list::-webkit-scrollbar-track{
     background-color: #aaa;
     border-radius: 5px;
 }
-::-webkit-scrollbar-thumb{
+.improvement_form ::-webkit-scrollbar-thumb{
     background-color: #34220D;
     border-radius: 5px;
     height: 20px;
 }
-.checkbox-dropdown-list input[type="checkbox"]:checked + label{
+.improvement_form .checkbox-dropdown-list input[type="checkbox"]:checked + label{
     background-color: #63513d;
     color: #fff;
 }
-.checkbox-dropdown-list input[type="checkbox"]{
+.improvement_form .checkbox-dropdown-list input[type="checkbox"]{
     position: absolute;
     opacity:0;
 }
-.checkbox-dropdown-list img{
+.improvement_form .checkbox-dropdown-list img{
     border-radius: 50%;
     padding: 2px;
 }
-.checkbox-dropdown {
+.improvement_form .checkbox-dropdown {
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -171,7 +167,7 @@ input[type=radio] + label {
 }
 
 /* Display CSS arrow to the right of the dropdown text */
-.checkbox-dropdown:after {
+.improvement_form .checkbox-dropdown:after {
     content:'';
     height: 0;
     position: absolute;
@@ -184,14 +180,14 @@ input[type=radio] + label {
 }
 
 /* Reverse the CSS arrow when the dropdown is active */
-.checkbox-dropdown.is-active:after {
+.improvement_form .checkbox-dropdown.is-active:after {
     border-right-color: #34220D;
     border-left-color: #fff;
     margin-top: -2px;
     right:9px;
 }
 
-.checkbox-dropdown-list {
+.improvement_form .checkbox-dropdown-list {
     list-style: none;
     width: 180px;
     margin: 0;
@@ -212,12 +208,12 @@ input[type=radio] + label {
     pointer-events: none; /* avoid mouse click events inside the dropdown */
     background-color: #fff;
 }
-.is-active .checkbox-dropdown-list {
+.improvement_form .is-active .checkbox-dropdown-list {
     opacity: 1; /* display the dropdown */
     pointer-events: auto; /* make sure that the user still can select checkboxes */
 }
 
-.checkbox-dropdown-list li label {
+.improvement_form .checkbox-dropdown-list li label {
     display: block;
     padding: 5px;
     margin: 2px 5px;
@@ -226,14 +222,14 @@ input[type=radio] + label {
     transition: all 0.2s ease-out;
 }
 
-.checkbox-dropdown-list li label:hover {
+.improvement_form .checkbox-dropdown-list li label:hover {
     background-color: #F5F6F8;
     color: #34220D;
 }
-.timeline{
+.improvement_form .timeline{
     margin-top: -35px;
 }
-.timeline input{
+.improvement_form .timeline input{
     width: 40%;
     padding: 5px 24px;
     background-color: #F5F6F8;
@@ -251,21 +247,21 @@ input[type=radio] + label {
     color: #34220D;
     opacity: 0.5;
 }
-.timeline .start_date{
+.improvement_form .timeline .start_date{
     float: left;
 }
-.timeline .arrow{
+.improvement_form .timeline .arrow{
     display: inline-block;
     width: 20%;
 }
-.timeline .arrow img{
+.improvement_form .timeline .arrow img{
     display: block;
     margin: 0 auto;
 }
-.timeline .deadline_date{
+.improvement_form .timeline .deadline_date{
     float: right;
 }
-.form_fields button{
+.improvement_form .form_fields button{
     display: block;
     border: 1px solid #F5F6F8;
     border-radius: 4px;
@@ -285,14 +281,14 @@ input[type=radio] + label {
     letter-spacing: 0.01em;
     color: #FFFFFF;
 }
-.form_fields .cancel{            
+.improvement_form .form_fields .cancel{            
     background: #FFFFFF;
     color: #63513D;
 }
-.form_fields .confirm:hover{
+.improvement_form .form_fields .confirm:hover{
     background:  #34220D;
 }
-.form_fields .cancel:hover{            
+.improvement_form .form_fields .cancel:hover{            
     border-color: #34220D;
     color: #34220D;
 }
