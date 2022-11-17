@@ -29,7 +29,7 @@ class ImprovementsTaskManagerModel(models.Model):
         return self.title
 
     def get_assigned_user(self):
-        return ",".join([str(p) for p in self.assigned_user.all()])
+        return ",".join([str(p.pk) for p in self.assigned_user.all()])
 
     class Meta:
         verbose_name = 'Improvement '

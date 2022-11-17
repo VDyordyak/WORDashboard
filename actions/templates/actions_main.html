@@ -318,8 +318,6 @@
                         form.find("input[type='checkbox']#"+assigned_user_list[id]+"").prop('checked', true);
                     }
                     
-                    var members_data = $("table.actions_table").children().children('#action_content').children('#members_for_'+response.action_pk+'');
-
                     var element = document.getElementById("edit-popup");
                     element.classList.add("show");
                     document.body.style.overflowY = "hidden";
@@ -333,20 +331,22 @@
         })
         $(document).on('submit', '#action_creation_form',function(e){
             //e.preventDefault();
-            let status= $("input[type='radio'][name='status']:checked").val();
-
             var date = new Date($(this).children('.form_fields').children('.deadline').children('input').val());
             var day = date.getDate();
             var month = date.getMonth() + 1;
             var year = date.getFullYear();
 
             deadline_date = [year, month, day ].join('-');
-            
-            let issue_name = $('#issue_name').val();
-            let action_text = $('#action_text').val();
-            let solution_text = $('#solution_text').val();
 
-            let assigned_user = getCheckedBoxes('assigned_user').join();
+            let checkboxes= $(this).find("input[type='checkbox']")
+            var checkboxesChecked = [];
+            for (var i=0; i<checkboxes.length; i++) {
+                // And stick the checked ones onto an array...
+                if (checkboxes[i].checked == true){
+                    checkboxesChecked.push(checkboxes[i].value);
+                }
+            }
+            let assigned_user = checkboxesChecked.join();
             $.ajax({
                 type:'POST',
                 url:'{% url "actions:action_main" %}',
@@ -380,7 +380,6 @@
             var year = date.getFullYear();
 
             deadline_date = [year, month, day ].join('-');           
-            
             
             let checkboxes= $(this).find("input[type='checkbox']")
             var checkboxesChecked = [];

@@ -14,6 +14,21 @@ def improvements(request):
     user_profile_images = UserModel.objects.all()
     response_data = {}
 
+    if request.method == "GET" and request.GET.get('action') == 'get_data':
+        improvement_pk = request.GET.get("improvement_pk", 1)
+        selected_improvement = ImprovementsTaskManagerModel.objects.get(id = improvement_pk)
+        
+        response_data['improvement_pk'] = improvement_pk
+        response_data['title'] = selected_improvement.title
+        response_data['description'] = selected_improvement.description
+
+        response_data['status'] = selected_improvement.status
+        response_data['assigned_users'] = selected_improvement.get_assigned_user()
+        response_data['start_date'] = selected_improvement.start_date
+        response_data['deadline_date'] = selected_improvement.deadline_date
+
+        return JsonResponse(response_data)
+    
     if request.POST.get('action') == 'add':
         improvement_title = request.POST.get('title')
         improvement_description = request.POST.get('description')
