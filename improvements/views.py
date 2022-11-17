@@ -53,6 +53,45 @@ def improvements(request):
             )
         for user in assigned_user:
             new_improvement.assigned_user.add(user)
+        new_improvement.save()
+        return render(request, 'improvements/templates/improvement.html', {'improvements': improvements_list, 'create_form': improvement_create_form, 'user_profile_list': user_profile_images})
+
+    if request.POST.get('action') == 'edit':
+        #Collecting data form response
+        improvement_pk = request.POST.get('improvement_pk')
+        improvement_title = request.POST.get('title')
+        improvement_description = request.POST.get('description')
+        selected_status= request.POST.get('status')
+        start_date = request.POST.get('start_date')
+        deadline_date = request.POST.get('deadline_date')
+        
+        #Updating improvement(instance) data
+        instance = ImprovementsTaskManagerModel.objects.get(id = improvement_pk)
+        instance.title=improvement_title
+        instance.description=improvement_description
+        instance.status=selected_status
+        instance.start_date=start_date
+        instance.deadline_date=deadline_date
+
+        #Connecting user with improvement
+        assigned_user_list = request.POST.get('assigned_users')
+        assigned_user = assigned_user_list.split(',')
+        try:
+            for user in assigned_user:
+                instance.assigned_user.add(user)
+        except:
+            changed = False
+        #Removing user from improvement connections
+        unassigned_user_list = request.POST.get('unassigned_users')
+        if unassigned_user_list != "":
+            unassigned_user = unassigned_user_list.split(',')
+            try:
+                for user in unassigned_user:
+                    instance.assigned_user.remove(user)
+            except:
+                changed = False
+        instance.save()
+        return render(request, 'improvements/templates/improvement.html', {'improvements': improvements_list, 'create_form': improvement_create_form, 'user_profile_list': user_profile_images})
     return render(request, 'improvements/templates/improvement.html', {'improvements': improvements_list, 'create_form': improvement_create_form, 'user_profile_list': user_profile_images})
 
 def change_status(request, pk):

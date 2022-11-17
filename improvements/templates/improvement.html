@@ -270,14 +270,6 @@
                         <legend class="legend_label">Performer</legend>
                         <div class="checkbox-dropdown">
                             <ul class="checkbox-dropdown-list">
-                                <li>
-                                    <input type="checkbox" id="all_users" value="all" name="assigned_user">
-                                    <label for="all_users">
-                                        <img src="{% static '/img/default_user_image.png' %}">
-                                        <span class="performer_name">All</span>
-                                        <span class="performer_surname">Users</span>
-                                    </label>
-                                </li>
                                 {% for user in user_profile_list %}
                                     {% if user.groups.first == request.user.groups.first %}
                                     <li>
@@ -410,7 +402,9 @@
             for (var i=0; i<checkboxes.length; i++) {
                 // And stick the checked ones onto an array...
                 if (checkboxes[i].checked == true){
-                    checkboxesChecked.push(checkboxes[i].value);
+                    if (checkboxes[i].id != 'all_users'){
+                        checkboxesChecked.push(checkboxes[i].value);
+                    }  
                 }
             }
             let assigned_user = checkboxesChecked.join();
@@ -441,7 +435,7 @@
             });
         });
         $(document).on('submit', '#improvement_editing_form',function(e){          
-            //e.preventDefault();
+            // e.preventDefault();
             var date = new Date($(this).children('.form_fields').children('.start_date').val());
             var day = date.getDate();
             var month = date.getMonth() + 1;
@@ -462,10 +456,14 @@
             for (var i=0; i<checkboxes.length; i++) {
                 // And stick the checked ones onto an array...
                 if (checkboxes[i].checked == false) {
-                    checkboxesUnchecked.push(checkboxes[i].value);
+                    if (checkboxes[i].id != 'all_users'){
+                        checkboxesUnchecked.push(checkboxes[i].value);
+                    }
                 } else
                 if (checkboxes[i].checked == true){
-                    checkboxesChecked.push(checkboxes[i].value);
+                    if (checkboxes[i].id != 'all_users'){
+                        checkboxesChecked.push(checkboxes[i].value);
+                    }  
                 }
             }
             let unassigned_user = checkboxesUnchecked.join();
@@ -480,7 +478,7 @@
                     description: $(this).children('.form_fields').children('.improvement_description').children('textarea').val(),
                     status: $(this).find("input[type='radio'][name='status']:checked").val(),
                     assigned_users: assigned_user,
-                    unassigned_user : unassigned_user,
+                    unassigned_users : unassigned_user,
                     start_date: start_date,
                     deadline_date: deadline_date,
                     csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),

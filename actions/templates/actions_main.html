@@ -388,10 +388,14 @@
             for (var i=0; i<checkboxes.length; i++) {
                 // And stick the checked ones onto an array...
                 if (checkboxes[i].checked == false) {
-                    checkboxesUnchecked.push(checkboxes[i].value);
+                    if (checkboxes[i].id != 'all_users'){
+                        checkboxesUnchecked.push(checkboxes[i].value);
+                    }
                 } else
                 if (checkboxes[i].checked == true){
-                    checkboxesChecked.push(checkboxes[i].value);
+                    if (checkboxes[i].id != 'all_users'){
+                        checkboxesChecked.push(checkboxes[i].value);
+                    }  
                 }
             }
             let unassigned_user = checkboxesUnchecked.join();

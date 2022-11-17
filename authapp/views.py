@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistration, UserEditForm
 from .models import UserModel
+from recognitions.models import RecognitionManagerModel
 from attendance.models import AttendanceManagerModel, WOR_date
 import datetime
 
@@ -19,7 +20,9 @@ def dashboard(request):
         'profile_information': profile_information, 
         'date_now': str(type(datetime.date(2022,1,1).strftime('%U'))),
         })
-
+@login_required
+def agenda(request):
+    return render(request, 'authapp/agenda.html',)
 @login_required
 def user_punch(request):
     user_to_punch = UserModel.objects.get(id=request.user.pk)
@@ -76,6 +79,10 @@ def register(request):
                 form.cleaned_data.get('password')
             )
             new_user.save()
+
+            RecognitionManagerModel.objects.create(
+                user_profile = UserModel.objects.get(id = new_user.id)
+            )
             return render(request, 'authapp/register_done.html')
     else:
         form = UserRegistration()

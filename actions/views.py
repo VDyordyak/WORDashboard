@@ -57,7 +57,6 @@ def actions(request):
             )
         for user in assigned_user:
             new_action.assigned_user.add(user)
-        return JsonResponse(response_data)
 
     if request.POST.get('action') == 'edit':
         instance = ActionTaskManagerModel.objects.get(id=request.POST.get('action_pk'))
@@ -91,7 +90,6 @@ def actions(request):
             except:
                 changed = False
         instance.save()
-        return JsonResponse(response_data)
 
     return render(request, 'actions_main.html', {
         'actions': action_list, 
