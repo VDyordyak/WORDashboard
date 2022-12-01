@@ -23,32 +23,6 @@ def dashboard(request):
 @login_required
 def agenda(request):
     return render(request, 'authapp/agenda.html',)
-@login_required
-def user_punch(request):
-    user_to_punch = UserModel.objects.get(id=request.user.pk)
-    date = datetime.datetime.now()
-    
-    current_week = date.strftime('%U')
-    if current_week[0] == "0":
-        current_week = int(current_week) % 10
-    else:
-        current_week = current_week 
-    
-    user_to_punch.last_punch_week = current_week
-    user_to_punch.save()
-    
-    
-    AttendanceManagerModel.objects.create(
-        person = user_to_punch,
-        user_status = 'present',
-        date = WOR_date.objects.get(week_number = current_week)
-    )
-
-
-    context = {
-        "welcome": "You have punched successfully!"
-    }
-    return render(request, 'authapp/dashboard.html', context=context)
 
 def wor_calendar_generation(request):
     current_group_user_list = UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first())

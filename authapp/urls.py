@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import edit, dashboard, register,user_punch, wor_calendar_generation, agenda
+from .views import edit, dashboard, register, wor_calendar_generation, agenda
 from django.urls import reverse_lazy
 from django.contrib.auth.views import (LoginView, LogoutView, PasswordResetDoneView, PasswordResetView,
                                        PasswordResetCompleteView, PasswordResetConfirmView,
@@ -14,7 +14,6 @@ urlpatterns = [
     path('dashboard/', dashboard, name='dashboard'),
     path('agenda/', agenda, name='agenda'),
     path('', LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('punch/', user_punch, name='punch'),
     path('generate/', wor_calendar_generation, name='calendar_generate'),
     path('logout/', LogoutView.as_view(template_name='authapp/logged_out.html'), name='logout'),
     path('password_change/', PasswordChangeView.as_view(
