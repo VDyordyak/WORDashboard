@@ -7,7 +7,7 @@ import datetime
 def attendance(request):
     week_list = WOR_date.objects.all()
     attendance_list = AttendanceManagerModel.objects.all()
-    user_list = UserModel.objects.all()
+    user_list = UserModel.objects.filter(groups = UserModel.objects.get(id = request.user.id).groups.first())
 
     current_week = datetime.datetime.now().strftime('%U')
     if current_week[0] == "0":

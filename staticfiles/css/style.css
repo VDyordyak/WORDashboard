@@ -270,7 +270,7 @@ header.toggeled {
 }
 .btns{
     float: right; 
-    width: 20%;
+    /* width: 20%; */
 }
 .content-block {
     background-color: white;

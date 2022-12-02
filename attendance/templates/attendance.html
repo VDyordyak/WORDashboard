@@ -4,103 +4,179 @@
     <link rel="stylesheet" type="text/css" href="{% static '/css/attendance.css' %}">
 {% endblock styles %}
 {% block content %}
-    <div>
-        <h2 class="page-title">Attendance (Week {{week}})</h2>
+<div>  
+    <div class="btns">
+        <a href="#" onclick="openForm()"><img src="{% static '/img/update.png' %}" alt="update page"> <span class="update">Update</span></a>
+        <div class="weeks_btns">
+            <button class="button" id="prev"> Back</button>
+            <button class="button" id="next">Next</button>
+        </div>
     </div>
-    <table class="attendance_table">
-      <thead>
-        <tr class="headling">
-           <th>User name</th>
-           <th>Status choice</th>
-       </tr>
-      </thead>
-      <tbody>
-          {% for user in users %}
-            {% if user.groups.first in request.user.groups.all %}
-                {% if user.last_punch_week != week %}
-                    <tr>
-                        <td class="user_information">
-                            {{user.last_punch_week}} {{week}}
-                            <img src="{{user.user_image.url}}">
-                            <span class="performer_name">{{user.first_name}} </span>
-                            <span class="performer_surname">{{user.last_name}}</span>
-                        </td>
-                        <td>
-                            <form action="{% url 'attendance:status_change' user.pk %}" method="POST">
-                                {% csrf_token %}
-                                <button name="not_present" type="submit">NOT PRESENT</button>
-                                <button name="excused" type="submit">EXCUSED</button>
-                                <button name="on_vacation" type="submit">ON VACATION</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endif %}
-          {% endfor %}
-      </tbody>
-    </table>
-    <a href="#"><p class="show-more">Show attendance dashboard</p></a>
-    <h2>Dashboard</h2>
-    <div class="attendance_dashboard">
+    <h2 class="page-title">Attendance</h2>
+    <div class="icons_info">
+        <ul class="leader_engager_icons">
+            <li class="leader_info"><img src="{% static '/img/leader_icon_drk.svg' %}" alt="leader"><span>WOR LEADER</span></li>
+            <li class="leader_info"><img class="padding_info" src="{% static '/img/engager_icon_drk.svg ' %}" alt="engager"><span>COMUNICATION ENGAGER</span></li>
+        </ul>
+        <ul class="leader_engager_status">
+            <li class="leader_info"><span class="circle_present"></span><span>Yes, present</span></li>
+            <li class="leader_info"><span class="circle_absent"></span><span>No, not present</span></li>
+            <li class="leader_info"><span class="circle_excused "></span><span>Excused (back-up in place)</span></li>
+            <li class="leader_info"><span class="circle_vacation "></span><span>On Vacation</span></li>
+        </ul>
+    </div>
+</div>
+<div class="attendance_content">
+    <div class="names">
         <table>
             <tr>
-                <th style="width: 500px;">User name</th>
-                {% for week_dashboard in week_list %}
-                    {% if week_dashboard.week_number <= week %}
-                        <th>{{week_dashboard.week_number}}</th>
-                    {% endif %}   
-                {% endfor %}
+                    <td ><span>Names</span><span><br>IMS Team</br></span></td>
             </tr>
-            {% for user in users %}
-                {% if user.groups.first in request.user.groups.all %}
-                    <tr>
-                        <td class="user_information">
-                            <img src="{{user.user_image.url}}">
-                            <span class="performer_name">{{user.first_name}}</span>
-                            <span class="performer_surname">{{user.last_name}}</span>
-                        </td>
-                        {% for attendance in attendances %}
-                            {% if attendance.person.username == user.username %}
-                                <td class="{{attendance.user_status}}"></td>
-                            {% endif %}
-                        {% endfor %}
-                    </tr> 
-                {% endif %}
-            {% endfor %}
+            {% for user in users%} 
+                <tr>
+                    <td>{{user.first_name}} {{user.last_name}}</td>
+                </tr>
+            {% endfor%}
         </table>
     </div>
+    <div class="weeks">
+        <table class="carousel">
+            <tbody class="carouselContainer">
+                <tr >
+                    {% for week in week_list%}
+                        <td class="slides"><span>Week {{week.week_number}}</span><span><br>31.01 - 06.01</br></span></td>
+                    {% endfor%} 
+                </tr>
+                {% for user in users%}     
+                    <tr>
+                        {% for week in week_list%}
+                            <td class="slides">
+                                {% for attendance in attendances%}
+                                    {% if user.pk == attendance.person.pk and week.week_number == attendance.date.week_number %}
+                                        
+                                            {% if week.wor_leader.pk == user.pk %}
+                                                <div class="{{attendance.user_status}} leader"><span>{{week.week_number}}</span></div>
+                                            {% elif week.wor_engager.pk == user.pk %}
+                                                <div class="{{attendance.user_status}} engager"><span>{{week.week_number}}</span></div>
+                                            {% else %}
+                                                <div class="{{attendance.user_status}}"><span></span>{{week.week_number}}</div>
+                                            {% endif %}     
+                                    {% endif %}
+                                {% endfor%}
+                            </td>
+                        {% endfor%}
+                    </tr>        
+                {% endfor%}                   
+            </tbody>
+        </table>
+    </div>
+</div>
+<!------------ Form POP-UP ------------->
+<div class="form_container" id="popup">
+    <div class="attendance_form">
+        <h3 class="form-title">Week #1 Attendance: Provide an action</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="users_container">
+                {% for user in users%}
+                    <div class="user_to_action">
+                        <div class="user_information">
+                            <div class="user_image"> <img src="{{user.user_image.url}}"> </div>
+                            <div class="user_name_block">
+                                <span class="user_name">{{user.first_name}} {{user.last_name}}</span>
+                            </div>
+                        </div>
+                        <fieldset class="action_buttons">
+                            <div class="button_item present">
+                                <input type="radio" id="present_{{user.id}}" name="status_user_{{user.id}}" value="present"
+                                        checked>
+                                <label for="present_{{user.id}}">To do</label>
+                            </div>                   
+                            <div class="button_item absent">
+                                <input type="radio" id="absent_{{user.id}}" name="status_user_{{user.id}}" value="absent">
+                                <label for="absent_{{user.id}}">In progress</label>
+                            </div>                                        
+                            <div class="button_item excused">
+                                <input type="radio" id="excused_{{user.id}}" name="status_user_{{user.id}}" value="excused">
+                                <label for="excused_{{user.id}}">Review</label>
+                            </div>                                            
+                            <div class="button_item on_vacation">
+                                <input type="radio" id="on_vacation_{{user.id}}" name="status_user_{{user.id}}" value="on_vacation">
+                                <label for="on_vacation_{{user.id}}">Done</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="button_form_field">
+                <button class="button confirm" type="submit">Confirm</button>
+                <button onclick="closeForm()" class="button cancel">Cancel</button>  
+            </div> 
+        </form>        
+    </div>
+</div>
+<script>
+    //////////////// POP-UP FORM ///////////////
+    function openForm() {
+        var element = document.getElementById("popup");
+        element.classList.add("show");
+        document.body.style.overflowY = "hidden";
+    }
+    function closeForm() {
+        var element = document.getElementById("popup");
+        element.classList.remove("show");
+        document.body.style.overflowY = "scroll";
+    }
+    //////////////// Header toggle button ///////////////
+    function addClass() { 
+        const header = document.getElementById("header");
+        const content = document.getElementById("content");
+        const header_space = document.getElementById("header-space");
+        
+        header.classList.toggle("toggeled");
+        content.classList.toggle("toggeled_content");
+        header_space.classList.toggle("header_space");
+    }
 
-    <style>
-        .attendance_dashboard{
-            max-width:100%; 
-            overflow-x: scroll;
-        }
-        .attendance_dashboard .user_information{
-            min-width: 150px;
-        }
-        .attendance_dashboard .user_information img{
-            width:30px;
-            height: 30px;
-            text-align: left !important;
-        }
-        .attendance_dashboard td, .attendance_dashboard th{
-            text-align: center;
-            min-width: 30px;
-            min-height: 30px;
-            padding: 1px;
-            border: 1px solid black;
-        }
-        .attendance_dashboard .present{
-            background-color: green;
-        }
-        .attendance_dashboard .not_present{
-            background-color: red;
-        }
-        .attendance_dashboard .excused{
-            background-color: yellow;
-        }
-        .attendance_dashboard .on_vacation{
-            background-color: blue;
-        }
-    </style>
+    ////////////////// Carousel /////////////////
+
+    const carouselContainer = document.querySelector(".carouselContainer");  
+    const slides = document.querySelectorAll('.slides');  
+    const next = document.querySelector('#next');  
+    const prev = document.querySelector('#prev');  
+    let counter = 0 ;  
+    const size = slides[0].clientWidth +1;  
+    console.log(size);
+    carouselContainer.style.transform = 'translateX(' + (-size * counter)   + 'px';  
+    console.log(carouselContainer.style.transform);
+    next.addEventListener('click',()=>{  
+    if (counter>54)return;  
+        carouselContainer.style.transition = 'transform 0.4s ease-in-out'; 
+        counter++;  
+        carouselContainer.style.transform = 'translateX(' + (-size * counter )  + 'px';  
+    });  
+    prev.addEventListener('click',()=>{  
+    if (counter<=0)return;  
+        carouselContainer.style.transition = 'transform 0.4s ease-in-out';  
+        counter--;  
+        carouselContainer.style.transform = 'translateX(' + (-size * counter ) + 'px';  
+    });  
+    carouselContainer.addEventListener('transitionend',()=>{  
+    console.log(slides[counter]);  
+    if(slides[counter].id ==='lastslide'){  
+        carouselContainer.style.transition = 'none';  
+        counter = slides.length - 2;      
+        carouselContainer.style.transform = 'translateX(' + (-size * counter ) + 'px';  
+    }  
+    });  
+    carouselContainer.addEventListener('transitionend',()=>{  
+    console.log(slides[counter]);  
+    if(slides[counter].id ==='firstslide'){  
+        carouselContainer.style.transition = 'none';  
+        counter = slides.length - counter;      
+        carouselContainer.style.transform = 'translateX(' + (-size * counter ) + 'px';  
+    }  
+    });  
+
+</script>
 {% endblock content %}
