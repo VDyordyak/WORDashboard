@@ -99,12 +99,12 @@
     background-position: center;
     height: 100%;
 }
-.slides .present.engager, .slides .absent.engager, .slides .excused.engager, .slides .vacation.engager {
+.slides .present.engager, .slides .absent.engager, .slides .excused.engager, .slides .on_vacation.engager {
     background-image: url(menu-img/engager_icon.svg);
     background-repeat: no-repeat;
     background-position: center;
 }
-.slides .present.leader, .slides .absent.leader, .slides .excused.leader, .slides .vacation.leader {
+.slides .present.leader, .slides .absent.leader, .slides .excused.leader, .slides .on_vacation.leader {
     background-image: url(menu-img/leader_icon.svg);
     background-repeat: no-repeat;
     background-position: center;

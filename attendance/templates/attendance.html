@@ -51,18 +51,28 @@
                     <tr>
                         {% for week in week_list%}
                             <td class="slides">
-                                {% for attendance in attendances%}
+                                <!-- {% for attendance in attendances%}
                                     {% if user.pk == attendance.person.pk and week.week_number == attendance.date.week_number %}
-                                        
-                                            {% if week.wor_leader.pk == user.pk %}
+                                        {% for week_role in week_roles%}
+                                            {% if week_role.wor_leader.pk == user.pk and week_role.week_id.week_number == week.week_number  %}
                                                 <div class="{{attendance.user_status}} leader"><span></span></div>
-                                            {% elif week.wor_engager.pk == user.pk %}
+                                            {% elif week_role.wor_engager.pk == user.pk and week_role.week_id.week_number == week.week_number  %}
                                                 <div class="{{attendance.user_status}} engager"><span></span></div>
-                                            {% else %}
+                                            {% elif week_role.week_id.week_number == week.week_number%}
                                                 <div class="{{attendance.user_status}}"><span></span></div>
-                                            {% endif %}     
+                                            {% endif %}
+                                        {% endfor%}   
                                     {% endif %}
-                                {% endfor%}
+                                {% endfor%} -->
+                                {% for week_role in week_roles%}
+                                    {% if week_role.wor_leader.pk == user.pk and week_role.week_id.week_number == week.week_number  %}
+                                        <div class="{{attendance.user_status}} leader"><span></span></div>
+                                    {% elif week_role.wor_engager.pk == user.pk and week_role.week_id.week_number == week.week_number  %}
+                                        <div class="{{attendance.user_status}} engager"><span></span></div>
+                                    {% elif week_role.week_id.week_number == week.week_number%}
+                                        <div class="{{attendance.user_status}}"><span></span></div>
+                                    {% endif %}
+                                {% endfor%} 
                             </td>
                         {% endfor%}
                     </tr>        

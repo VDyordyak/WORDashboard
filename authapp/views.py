@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import UserRegistration, UserEditForm
 from .models import UserModel
 from recognitions.models import RecognitionManagerModel
-from attendance.models import AttendanceManagerModel, WOR_date
+from attendance.models import AttendanceManagerModel, WOR_date, WeekAttendanceRoleManager
 import datetime
 
 # Create your views here.
@@ -26,7 +26,7 @@ def agenda(request):
 
 def wor_calendar_generation(request):
     current_group_user_list = UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first())
-    
+    user_list_count = UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first()).count()
     date = datetime.datetime.now()
 
     for i in range(52):
@@ -36,12 +36,33 @@ def wor_calendar_generation(request):
         else:
             current_week = current_week 
 
-        WOR_date.objects.create(
+        WOR_date.objects.get_or_create(
             wor_date = date,
             week_number = current_week, 
-            wor_leader= current_group_user_list[0]
         )
         date = date + datetime.timedelta(days=7)
+    ready_selected =  current_group_user_list[0].id
+    for week in WOR_date.objects.all():  
+        for j in range(current_group_user_list.count()):
+            if current_group_user_list[j].id == ready_selected:
+                if current_group_user_list[j] == current_group_user_list[current_group_user_list.count()-1]:
+                    WeekAttendanceRoleManager.objects.get_or_create(
+                        week_id = WOR_date.objects.get(week_number = week.week_number),
+                        users_group = UserModel.objects.get(id = request.user.id).groups.first(),
+                        wor_leader = current_group_user_list[j],
+                        wor_engager = current_group_user_list[0],
+                    )
+                    ready_selected =  current_group_user_list[0].id
+                    break
+                else:
+                    WeekAttendanceRoleManager.objects.get_or_create(
+                        week_id =  WOR_date.objects.get(week_number = week.week_number),
+                        users_group = UserModel.objects.get(id = request.user.id).groups.first(),
+                        wor_leader = current_group_user_list[j],
+                        wor_engager = current_group_user_list[j+1],
+                    )
+                    ready_selected =  current_group_user_list[j+1].id
+                    break  
     return redirect('/dashboard/')
 
 def register(request):

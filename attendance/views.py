@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from authapp.models import UserModel
-from .models import AttendanceManagerModel, WOR_date
+from .models import AttendanceManagerModel, WOR_date, WeekAttendanceRoleManager
 import datetime
 import json
 
@@ -32,11 +32,12 @@ def attendance(request):
                     user_status = user_status_dictionary[id],
                 )
                 new_attendance.save()
-
+    week_roles = WeekAttendanceRoleManager.objects.all()
     return render(request, 'attendance.html', {
         'attendances': attendance_list, 
         'users': user_list, 
         'week': current_week, 
-        'week_list' :  week_list
+        'week_list' :  week_list,
+        'week_roles' : week_roles
         })
 
