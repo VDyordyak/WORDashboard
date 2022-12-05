@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from authapp.models import UserModel
 from .models import AttendanceManagerModel, WOR_date
 import datetime
+import json
 
 # Create your views here.
 def attendance(request):
@@ -15,6 +16,23 @@ def attendance(request):
     else:
         current_week = int(current_week) 
 
+    if request.POST.get('action') == 'update':
+        week_no= int(request.POST.get('current_week'))
+        user_status_dictionary = json.loads(request.POST.get('user_status_dictionary'))
+
+        for id in user_status_dictionary:
+            try:
+                new_attendance = AttendanceManagerModel.objects.get(date = WOR_date.objects.get(week_number = week_no), person = UserModel.objects.get(id = id))
+                new_attendance.user_status = user_status_dictionary[id]
+                new_attendance.save()
+            except AttendanceManagerModel.DoesNotExist:
+                new_attendance = AttendanceManagerModel.objects.create(
+                    date = WOR_date.objects.get(week_number = week_no),
+                    person = UserModel.objects.get(id = id),
+                    user_status = user_status_dictionary[id],
+                )
+                new_attendance.save()
+
     return render(request, 'attendance.html', {
         'attendances': attendance_list, 
         'users': user_list, 
@@ -22,59 +40,3 @@ def attendance(request):
         'week_list' :  week_list
         })
 
-def change_user_status(request, pk):
-    changed = True
-    if "not_present" in request.POST:
-        try:
-            date = datetime.datetime.now()   
-            current_week = date.strftime('%U')
-            if current_week[0] == "0":
-                current_week = int(current_week) % 10
-            else:
-                current_week = current_week 
-
-            AttendanceManagerModel.objects.create(
-                person = UserModel.objects.get(id=pk),
-                user_status = 'not_present',
-                date = WOR_date.objects.get(week_number = current_week)
-            )
-        except:
-            changed = False
-    elif "excused" in request.POST:
-        try:
-            date = datetime.datetime.now()   
-            current_week = date.strftime('%U')
-            if current_week[0] == "0":
-                current_week = int(current_week) % 10
-            else:
-                current_week = current_week 
-
-            AttendanceManagerModel.objects.create(
-                person = UserModel.objects.get(id=pk),
-                user_status = 'excused',
-                date = WOR_date.objects.get(week_number = current_week)
-            )
-        except:
-            changed = False
-    else:
-        try:
-            date = datetime.datetime.now()   
-            current_week = date.strftime('%U')
-            if current_week[0] == "0":
-                current_week = int(current_week) % 10
-            else:
-                current_week = current_week 
-
-            AttendanceManagerModel.objects.create(
-                person = UserModel.objects.get(id=pk),
-                user_status = 'on_vacation',
-                date = WOR_date.objects.get(week_number = current_week)
-            )
-        except:
-            changed = False
-    if changed:
-        UserModel.objects.filter(id=pk).update(last_punch_week=current_week)
-    return redirect('/attendance')
-
-def attendance_archive(request):
-    pass

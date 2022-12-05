@@ -177,6 +177,9 @@
 .recognition_block .recognition_item:first-child{
     margin-left: 0px;
 }
+.recognition_block .recognition_item:last-child{
+    margin-right: 10px;
+}
 .recognition_block .recognition_item .member{
     display: block;
     height: 60px;

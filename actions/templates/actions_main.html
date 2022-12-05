@@ -44,7 +44,7 @@
                             {% endif %}
                         </td>
                         <td class="date">{{action.deadline_date|date:"d.m.Y"}}</td>
-                        <td class="status">
+                        <td class="status" id="{{action.pk}}">
                             {% if action.action_status == 'draft' %}
                                 <img id="1" src="{% static '/img/in_progress.svg' %}">
                             {% elif action.action_status == 'completed' %}
@@ -290,7 +290,7 @@
                 $("input[type='checkbox']#all_users").prop('checked',false);
             }
         });
-        $('.title_click').on("click", function(e) {
+        $('.title_click, .status').on("click", function(e) {
             e.preventDefault();
             // get the action id
             var action_pk = $(this).attr("id");

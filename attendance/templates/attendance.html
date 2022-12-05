@@ -55,11 +55,11 @@
                                     {% if user.pk == attendance.person.pk and week.week_number == attendance.date.week_number %}
                                         
                                             {% if week.wor_leader.pk == user.pk %}
-                                                <div class="{{attendance.user_status}} leader"><span>{{week.week_number}}</span></div>
+                                                <div class="{{attendance.user_status}} leader"><span></span></div>
                                             {% elif week.wor_engager.pk == user.pk %}
-                                                <div class="{{attendance.user_status}} engager"><span>{{week.week_number}}</span></div>
+                                                <div class="{{attendance.user_status}} engager"><span></span></div>
                                             {% else %}
-                                                <div class="{{attendance.user_status}}"><span></span>{{week.week_number}}</div>
+                                                <div class="{{attendance.user_status}}"><span></span></div>
                                             {% endif %}     
                                     {% endif %}
                                 {% endfor%}
@@ -74,8 +74,8 @@
 <!------------ Form POP-UP ------------->
 <div class="form_container" id="popup">
     <div class="attendance_form">
-        <h3 class="form-title">Week #1 Attendance: Provide an action</h3>
-        <form method="post">
+        <h3 class="form-title">Week #<span id="current_week_id">{{week}}</span> Attendance: Provide an action</h3>
+        <form method="post" id="attendance_update_form">
             {% csrf_token %}
             <div class="users_container">
                 {% for user in users%}
@@ -88,21 +88,44 @@
                         </div>
                         <fieldset class="action_buttons">
                             <div class="button_item present">
-                                <input type="radio" id="present_{{user.id}}" name="status_user_{{user.id}}" value="present"
-                                        checked>
-                                <label for="present_{{user.id}}">To do</label>
+                                <input type="radio" id="present_{{user.id}}" name="status_user_{{user.id}}" value="present" checked>
+                                <label for="present_{{user.id}}">Present</label>
                             </div>                   
                             <div class="button_item absent">
-                                <input type="radio" id="absent_{{user.id}}" name="status_user_{{user.id}}" value="absent">
-                                <label for="absent_{{user.id}}">In progress</label>
+                                <input type="radio" id="absent_{{user.id}}" name="status_user_{{user.id}}" value="absent"
+                                {% for attendance in attendances%}
+                                    {% if user.pk == attendance.person.pk and week == attendance.date.week_number %}
+                                        {% if attendance.user_status == 'absent' %}   
+                                            checked 
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor%}
+                                >
+                                <label for="absent_{{user.id}}">Not present</label>
                             </div>                                        
                             <div class="button_item excused">
-                                <input type="radio" id="excused_{{user.id}}" name="status_user_{{user.id}}" value="excused">
-                                <label for="excused_{{user.id}}">Review</label>
+                                <input type="radio" id="excused_{{user.id}}" name="status_user_{{user.id}}" value="excused"
+                                {% for attendance in attendances%}
+                                    {% if user.pk == attendance.person.pk and week == attendance.date.week_number %}
+                                        {% if attendance.user_status == 'excused' %}   
+                                            checked 
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor%}
+                                >
+                                <label for="excused_{{user.id}}">Excused</label>
                             </div>                                            
                             <div class="button_item on_vacation">
-                                <input type="radio" id="on_vacation_{{user.id}}" name="status_user_{{user.id}}" value="on_vacation">
-                                <label for="on_vacation_{{user.id}}">Done</label>
+                                <input type="radio" id="on_vacation_{{user.id}}" name="status_user_{{user.id}}" value="on_vacation"
+                                {% for attendance in attendances%}
+                                    {% if user.pk == attendance.person.pk and week == attendance.date.week_number %}
+                                        {% if attendance.user_status == 'on_vacation' %}   
+                                            checked 
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor%}
+                                >
+                                <label for="on_vacation_{{user.id}}">On Vacation</label>
                             </div>
                         </fieldset>
                     </div>
@@ -115,36 +138,46 @@
         </form>        
     </div>
 </div>
+<script src="{% static '/js/attendance.js' %}"></script>
 <script>
-    //////////////// POP-UP FORM ///////////////
-    function openForm() {
-        var element = document.getElementById("popup");
-        element.classList.add("show");
-        document.body.style.overflowY = "hidden";
-    }
-    function closeForm() {
-        var element = document.getElementById("popup");
-        element.classList.remove("show");
-        document.body.style.overflowY = "scroll";
-    }
-    //////////////// Header toggle button ///////////////
-    function addClass() { 
-        const header = document.getElementById("header");
-        const content = document.getElementById("content");
-        const header_space = document.getElementById("header-space");
+    $(document).on('submit', '#attendance_update_form',function(e){
+        // e.preventDefault();
         
-        header.classList.toggle("toggeled");
-        content.classList.toggle("toggeled_content");
-        header_space.classList.toggle("header_space");
-    }
+        var user_selected_statuses_list = $(this).find("input[type='radio']:checked");
+        var user_status_dictionary = {};
+
+        for (let i=0; i<user_selected_statuses_list.length;i++){
+            user_status_dictionary[(user_selected_statuses_list[i].name).replace('status_user_', '')] = user_selected_statuses_list[i].value;
+        }
+
+        $.ajax({
+            type:'POST',
+            url:"{% url 'attendance:attendance_page' %}",
+            data:{
+                current_week: $('#current_week_id').html(),
+                user_status_dictionary: JSON.stringify(user_status_dictionary),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                action: 'update'
+            },
+            success:function(json){
+                var element = document.getElementById("popup");
+                element.classList.remove("show");
+                document.body.style.overflowY = "scroll";
+            },
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    });  
 
     ////////////////// Carousel /////////////////
-
     const carouselContainer = document.querySelector(".carouselContainer");  
     const slides = document.querySelectorAll('.slides');  
     const next = document.querySelector('#next');  
     const prev = document.querySelector('#prev');  
-    let counter = 0 ;  
+    let counter = {{week}} -1;  
     const size = slides[0].clientWidth +1;  
     console.log(size);
     carouselContainer.style.transform = 'translateX(' + (-size * counter)   + 'px';  
@@ -176,7 +209,6 @@
         counter = slides.length - counter;      
         carouselContainer.style.transform = 'translateX(' + (-size * counter ) + 'px';  
     }  
-    });  
-
+    });
 </script>
 {% endblock content %}
