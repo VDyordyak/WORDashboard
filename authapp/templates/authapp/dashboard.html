@@ -1,11 +1,20 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Dashboard{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static '/css/account.css' %}">
+{% endblock styles %}
 {% block content %}
-<h1>{{welcome}}</h1>
+<div class="headling">
+    <h2 class="page-title">Settings</h2>
+    <div class="content_tabs">
+        <a href="#" class="active">Account setup</a>
+        <a href="{% url 'authapp:settings' %}">Facilitator settings</a>
+    </div>
+</div>
 <br>
-<a href="{% url 'authapp:edit' %}" class="btn btn-primary">Edit Your Profile</a> or
-<a href="{% url 'authapp:password_change' %}" class="btn btn-warning">Change your password</a>  or
-<a href="{% url 'authapp:calendar_generate' %}" class="btn btn-primary">Generate WOR calendar</a>
+<a href="{% url 'authapp:edit' %}" class="btn btn-primary">Edit Your Profile</a>
+<a href="{% url 'authapp:password_change' %}" class="btn btn-warning">Change your password</a>
 <hr>
 
 {% endblock content %}

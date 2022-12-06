@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from authapp.models import UserModel
 from .models import AttendanceManagerModel, WOR_date, WeekAttendanceRoleManager
 import datetime
+import time
 import json
 
 # Create your views here.
@@ -33,6 +34,7 @@ def attendance(request):
                 )
                 new_attendance.save()
     week_roles = WeekAttendanceRoleManager.objects.all()
+    time.sleep(1)
     return render(request, 'attendance.html', {
         'attendances': attendance_list, 
         'users': user_list, 

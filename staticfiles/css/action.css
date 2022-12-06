@@ -19,6 +19,7 @@ margin-bottom: 50px;
     border-radius: 5px;
     margin-bottom: 20px;
     padding-bottom: 10px;
+    min-height: 530px;
 }
 .update {
     padding-right: 5%;

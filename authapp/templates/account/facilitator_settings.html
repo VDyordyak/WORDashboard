@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Facilitator settings{% endblock title %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static '/css/account.css' %}">
+{% endblock styles %}
+{% block content %}
+    <div class="headling">
+        <div class="btns">
+            <a href="{% url 'authapp:calendar_generate' %}" ><img src="{% static '/img/update.png' %}" alt="update page"> <span class="update">Generate</span></a>
+            <a href="{% url 'authapp:register' %}" ><img src="{% static '/img/add_btn.png' %}" alt="update page"> <span class="update">Add user</span></a>
+        </div>
+        <h2 class="page-title">Settings</h2>
+        <div class="content_tabs">
+            <a href="{% url 'authapp:dashboard' %}">Account setup</a>
+            <a href="#" class="active">Facilitator settings</a>
+        </div>
+    </div>
+    <form id="facilitator_update_for" class="facilitator_settings">
+        {% csrf_token %}
+        <div class="facilitator_selector">
+            <div class="selector_headling">
+                <div class="wor_week">
+
+                </div>
+                <div class="wor_leader">
+                    <img src="{% static '/img/leader_icon.svg' %}" alt="">
+                </div>
+                <div class="wor_engager">
+                    <img src="{% static '/img/engager_icon.svg' %}" alt="">
+                </div>
+            </div>
+            {% for week in week_list %}
+                {% if week.week_number >= current_week  %}
+                    <div class="selector_body_item" id="week_1">
+                        <div class="wor_week">
+                            <span class="week">Week #{{week.week_number}}</span><br/>
+                            <span class="period">{{week.start_date|date:"m.d"}} - {{week.end_date|date:"m.d"}}</span>
+                        </div>
+                        {% for week_role in week_roles%}
+                            {% if week_role.week_id.week_number == week.week_number  %}
+                                <div class="wor_leader">
+                                    <div class="user_profile">
+                                        <div class="user_image">
+                                            <img src="{{week_role.wor_leader.user_image.url}}" alt="">
+                                        </div>
+                                        <div class="user_information">
+                                            <span class="first_name">{{week_role.wor_leader.first_name}} </span>
+                                            <span class="last_name">{{week_role.wor_leader.last_name}}</span>
+                                            <span class="email" style="display: none;">{{week_role.wor_leader.email}}</span>
+                                            <span class="position" style="display: none;">{{week_role.wor_leader.user_position}}</span>
+                                        </div>
+                                        <div class="checkbox-dropdown">
+                                            <ul class="checkbox-dropdown-list">
+                                                {% for user in users%}
+                                                    {% if user.pk != week_role.wor_leader.pk %}
+                                                    <li>
+                                                        <input type="radio" id="week_{{week.week_number}}_leader_{{user.pk}}" value="week_{{week.week_number}}-id_{{user.pk}}" name="leader_week_{{week.week_number}}" /> 
+                                                        <label for="week_{{week.week_number}}_leader_{{user.pk}}" id="leader_id_{{user.pk}}">
+                                                            <div class="user_image">
+                                                                <img src="{{user.user_image.url}}" alt="">
+                                                            </div>
+                                                            <div class="user_information">
+                                                                <span class="first_name">{{user.first_name}}</span>
+                                                                <span class="last_name">{{user.last_name}}</span>
+                                                            </div> 
+                                                        </label>
+                                                    </li>
+                                                    {% endif %} 
+                                                {% endfor %}         
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if week_role.week_id.week_number == week.week_number  %}
+                                <div class="wor_engager">
+                                    <div class="user_profile">
+                                        <div class="user_image">
+                                            <img src="{{week_role.wor_engager.user_image.url}}" alt="">
+                                        </div>
+                                        <div class="user_information">
+                                            <span class="first_name">{{week_role.wor_engager.first_name}} </span>
+                                            <span class="last_name">{{week_role.wor_engager.last_name}}</span>
+                                            <span class="email" style="display: none;">{{week_role.wor_engager.email}}</span>
+                                            <span class="position" style="display: none;">{{week_role.wor_engager.user_position}}</span>
+                                        </div>
+                                        <div class="checkbox-dropdown">
+                                            <ul class="checkbox-dropdown-list">
+                                                {% for user in users%}
+                                                    {% if user.pk != week_role.wor_engager.pk %}
+                                                        <li>
+                                                            <input type="radio" id="week_{{week.week_number}}_engager_{{user.pk}}" value="week_{{week.week_number}}-id_{{user.pk}}" name="engager_week_{{week.week_number}}" /> 
+                                                            <label for="week_{{week.week_number}}_engager_{{user.pk}}" id="engager_id_{{user.pk}}">
+                                                                <div class="user_image">
+                                                                    <img src="{{user.user_image.url}}" alt="">
+                                                                </div>
+                                                                <div class="user_information">
+                                                                    <span class="first_name">{{user.first_name}}</span>
+                                                                    <span class="last_name">{{user.last_name}}</span>
+                                                                </div> 
+                                                            </label>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}           
+                                            </ul>
+                                        </div> 
+                                    </div> 
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="right-sidebar">
+            <div class="facilitators">
+                {% for role in current_week_roles%}
+                <h2 class="page-title">The Week #{{current_week}} facilitators:</h2>
+                    <div class="user_description" style="margin-bottom: 56px;">
+                        <div class="user_information_block">
+                            <div class="user_image">
+                                <img src="{{role.wor_leader.user_image.url}}" alt="">
+                            </div>
+                            <div class="user_information">
+                                <h3 class="block_title">WOR LEADER</h3>
+                                <span class="user_name">{{role.wor_leader.first_name}} {{role.wor_leader.last_name}}</span>
+                            <span class="user_position">{{role.wor_leader.user_position}}</span> 
+                            </div>
+                        </div>
+                        <div class="user_personal_data_block">
+                            <div class="user_personal_data">
+                                <span class="label">Email:</span>
+                                <span class="data">{{role.wor_leader.email}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user_description">
+                        <div class="user_information_block">
+                            <div class="user_image">
+                                <img src="{{role.wor_engager.user_image.url}}" alt="">
+                            </div>
+                            <div class="user_information">
+                                <h3 class="block_title block_title_engager">COMUNICATION ENGAGER</h3>
+                                <span class="user_name">{{role.wor_engager.first_name}} {{role.wor_engager.last_name}}</span>
+                                <span class="user_position">{{role.wor_engager.user_position}}</span> 
+                            </div>
+                        </div>
+                        <div class="user_personal_data_block">
+                            <div class="user_personal_data">
+                                <span class="label">Email:</span>
+                                <span class="data">{{role.wor_engager.email}}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="action_buttons">
+                <button class="reset" type="reset">Cancel</button>
+                <button class="submit" type="submit">Accept change</button>
+            </div>
+        </div>
+    </form>
+    <script src="{% static '/js/account.js' %}"></script>  
+    <script>
+        $(document).on('submit', '#facilitator_update_for',function(e){
+            e.preventDefault();
+            var users_to_update_list = $(this).find("input[type='radio']:checked");
+
+            var wor_leader_update_list = [];
+            var wor_engager_update_list =[];
+            var week, element_value, user_id = "";
+            
+            for (let i=0; i<users_to_update_list.length;i++){
+                if (users_to_update_list[i].checked == true){
+                    element_value = ($(users_to_update_list[i]).val()).split("-");;
+                    // week_{{week.week_number}}-id_{{user.pk}}
+                    week = element_value[0].replace("week_", '');
+                    user_id = element_value[1].replace("id_", '');
+                    // alert("Week: "+ week +"; User ID: "+ user_id+"; ");
+                    if (($(users_to_update_list[i]).attr("name")).startsWith("leader")){
+                        wor_leader_update_list.push({
+                            week:   week,
+                            user_id: user_id
+                        });
+                    } 
+                    else if (($(users_to_update_list[i]).attr("name")).startsWith("engager")){
+                        wor_engager_update_list["week"] += ","+week;
+                        wor_engager_update_list['user_id'] += ","+user_id;
+                    }
+                }
+            }
+            console.log("Leaders:/n")
+            console.log(JSON.stringify(wor_leader_update_list));
+            console.log("Engagers:/n")
+            console.log(JSON.stringify(wor_engager_update_list));
+            $.ajax({
+                type:'POST',
+                url:'{% url "authapp:settings" %}',
+                data:{
+                    wor_leaders_list : JSON.stringify(wor_leader_update_list),
+                    wor_engagers_list : JSON.stringify(wor_engager_update_list),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    action: 'update'
+                },
+                success:function(json){
+                    alert(json.user_id);
+                },
+                error : function(xhr,errmsg,err) {
+                    $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                        " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+            });
+        });
+    </script>
+{% endblock content %}

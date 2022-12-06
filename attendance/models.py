@@ -8,13 +8,12 @@ from django.contrib.auth.models import Group
 
 # Create your models here.
 class WOR_date (models.Model):
-    wor_date = models.DateField(default=datetime.now, verbose_name="WOR date")
     start_date  =models.DateField(default=datetime.now,blank=True, verbose_name="week start date")
     end_date = models.DateField(default=datetime.now,blank=True, verbose_name="week end date")
     week_number = models.IntegerField(default="0", verbose_name="Week")
     
     def __str__(self):
-        return "week:"+str(self.week_number)+"; date:"+str(self.wor_date.day)+" of "+ calendar.month_name[self.wor_date.month]
+        return "Week#"+str(self.week_number);
     class Meta:
         ordering = ['week_number']
 
@@ -28,7 +27,7 @@ class WeekAttendanceRoleManager(models.Model):
         return "Week#"+str(self.week_id.week_number)
 
     class Meta:
-        ordering = ['-week_id']
+        ordering = ['week_id']
 
 class AttendanceManagerModel(models.Model):
     USER_STATUS = (

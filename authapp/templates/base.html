@@ -83,9 +83,9 @@
                           <a class="nav-link" href="{% url 'recognitions:recognition_page' %}"><span class="recognition_image"></span><span class="recognition">Recognition</span></a>
                         </li>
                         {% if request.path == "/notice-board/" %}
-                        <li class="nav-item active" style="display: none;">
+                        <li class="nav-item active" >
                         {% else %}
-                        <li class="nav-item " style="display: none;">
+                        <li class="nav-item ">
                         {% endif %}
                           <a class="nav-link" href="#"><span class="notice_board_image"></span><span class="notice_board">Notice Board</span></a>
                         </li>
@@ -148,6 +148,8 @@
             header.classList.toggle("toggeled");
             content.classList.toggle("toggeled_content");
             header_space.classList.toggle("header_space");
+            // new part
+            $(".checkbox-dropdown-list").toggleClass("move")
         }
     </script>
 </body>

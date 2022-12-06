@@ -12,8 +12,3 @@ class UserModel(AbstractUser):
                                    verbose_name="Profile image")
     user_position = models.CharField(blank=True, max_length=255, verbose_name="User position")
     user_about = models.TextField(blank=True, verbose_name="About you")
-    user_phone_number = models.CharField(blank=True, max_length=255, verbose_name="Your phone number")
-
-    is_wor_leader = models.BooleanField(default = True, verbose_name="This week lidering")
-    is_wor_engager = models.BooleanField(default = True, verbose_name="This week lidering")
-    last_punch_week = models.IntegerField(default="0", verbose_name="Last punch week")

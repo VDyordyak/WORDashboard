@@ -6,6 +6,7 @@ from .models import UserModel
 from recognitions.models import RecognitionManagerModel
 from attendance.models import AttendanceManagerModel, WOR_date, WeekAttendanceRoleManager
 import datetime
+import time
 
 # Create your views here.
 
@@ -28,10 +29,14 @@ def agenda(request):
         users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
         week_id = WOR_date.objects.get(week_number = current_week)
         )
-    next_week_roles = WeekAttendanceRoleManager.objects.filter(
-        users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
-        week_id = WOR_date.objects.get(week_number = str(int(current_week)+1))
-        )
+    try:
+        next_week_roles = WeekAttendanceRoleManager.objects.filter(
+            users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
+            week_id = WOR_date.objects.get(week_number = str(int(current_week)+1))
+            )
+    except:
+        next_week_roles = ""
+
     context = {
         "week_roles": week_roles,
         "next_week_roles": next_week_roles
@@ -53,9 +58,8 @@ def wor_calendar_generation(request):
             current_week = current_week 
 
         WOR_date.objects.get_or_create(
-            wor_date = date,
-            week_start_date = start,
-            week_end_date = end,
+            start_date = start,
+            end_date = end,
             week_number = current_week,
         )
         date = date + datetime.timedelta(days=7)
@@ -81,7 +85,7 @@ def wor_calendar_generation(request):
                     )
                     ready_selected =  current_group_user_list[j+1].id
                     break  
-    return redirect('/dashboard/')
+    return redirect('/accounts/settings/')
 
 def register(request):
     if request.method == 'POST':
@@ -91,6 +95,10 @@ def register(request):
             new_user.set_password(
                 form.cleaned_data.get('password')
             )
+            new_user.save()
+            time.sleep(2)
+
+            new_user.groups.add(UserModel.objects.get(id = request.user.id).groups.first())
             new_user.save()
 
             RecognitionManagerModel.objects.create(
@@ -119,3 +127,39 @@ def edit(request):
         'form': user_form,
     }
     return render(request, 'authapp/edit.html', context=context)
+
+@login_required
+def settings(request):
+    if request.POST.get('action') == 'update':
+            import json
+            from django.http import JsonResponse
+            responce = {}
+            wor_leader_update_list =  request.POST.get('wor_leaders_list')   
+            wor_engager_update_list = request.POST.get('wor_engagers_list')
+
+            return JsonResponse(wor_leader_update_list)
+    try:
+        week_list = WOR_date.objects.all()
+        user_list = UserModel.objects.filter(groups = UserModel.objects.get(id = request.user.id).groups.first())
+
+        current_week = datetime.datetime.now().strftime('%U')
+        if current_week[0] == "0":
+            current_week = int(current_week) % 10
+        else:
+            current_week = int(current_week)
+
+        week_roles = WeekAttendanceRoleManager.objects.all()
+        current_week_roles = WeekAttendanceRoleManager.objects.filter(
+            users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
+            week_id = WOR_date.objects.get(week_number = current_week)
+            )
+            
+        return render(request, 'account/facilitator_settings.html', {
+        'users': user_list, 
+        'current_week': current_week, 
+        'week_list' :  week_list,
+        'week_roles' : week_roles,
+        'current_week_roles': current_week_roles
+        })
+    except:
+        return render(request, 'account/facilitator_settings.html')

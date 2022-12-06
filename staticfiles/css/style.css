@@ -279,6 +279,7 @@ header.toggeled {
     margin-bottom: 20px;
     /* height: 110%; */
     padding-bottom: 30px;
+    min-height: 530px;
 }
 .toggeled_content {
     width: 94.333333%;

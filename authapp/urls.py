@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import edit, dashboard, register, wor_calendar_generation, agenda
+from .views import edit, dashboard, register, wor_calendar_generation, agenda, settings
 from django.urls import reverse_lazy
 from django.contrib.auth.views import (LoginView, LogoutView, PasswordResetDoneView, PasswordResetView,
                                        PasswordResetCompleteView, PasswordResetConfirmView,
@@ -9,9 +9,10 @@ from django.contrib.auth.views import (LoginView, LogoutView, PasswordResetDoneV
 app_name = 'authapp'
 
 urlpatterns = [
-    path('register/', register, name='register'),
-    path('edit/', edit, name='edit'),
+    path('accounts/register/', register, name='register'),
+    path('accounts/edit/', edit, name='edit'),
     path('accounts/profile/', dashboard, name='dashboard'),
+    path('accounts/settings/', settings, name='settings'),
     path('agenda/', agenda, name='agenda'),
     path('', LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('generate/', wor_calendar_generation, name='calendar_generate'),
