@@ -54,36 +54,48 @@
         <div class="user_description" style="margin-bottom: 56px;">
             <div class="user_information_block">
                 <div class="user_image">
-                    <img src="avatar1.png" alt="">
+                    {% for week_role in week_roles %}
+                        <img src="{{week_role.wor_leader.user_image.url}}" alt="">
+                    {% endfor %}
                 </div>
                 <div class="user_information">
                     <h3 class="block_title">WOR LEADER</h3>
-                    <span class="user_name">Sierra Ferguson</span>
-                    <span class="user_position">Product Manager at Nestlé</span> 
+                    {% for week_role in week_roles %}
+                        <span class="user_name">{{week_role.wor_leader.first_name}} {{week_role.wor_leader.last_name}}</span>
+                        <span class="user_position">{{week_role.wor_leader.user_position}}</span> 
+                    {% endfor %}                    
                 </div>
             </div>
             <div class="user_personal_data_block">
                 <div class="user_personal_data">
                     <span class="label">Email:</span>
-                    <span class="data">s.ferguson@gmail.com</span>
+                    {% for week_role in week_roles %}
+                        <span class="data">{{week_role.wor_leader.email}}</span>
+                    {% endfor %} 
                 </div>
             </div>
         </div>
         <div class="user_description">
             <div class="user_information_block">
                 <div class="user_image">
-                    <img src="avatar2.png" alt="">
+                    {% for week_role in week_roles %}
+                        <img src="{{week_role.wor_engager.user_image.url}}" alt="">
+                    {% endfor %}
                 </div>
                 <div class="user_information">
                     <h3 class="block_title block_title_engager">COMUNICATION ENGAGER</h3>
-                    <span class="user_name">Cameron Williamson</span>
-                    <span class="user_position">Marketing Coordinator</span> 
+                    {% for week_role in week_roles %}
+                        <span class="user_name">{{week_role.wor_engager.first_name}} {{week_role.wor_engager.last_name}}</span>
+                        <span class="user_position">{{week_role.wor_engager.user_position}}</span> 
+                    {% endfor %}       
                 </div>
             </div>
             <div class="user_personal_data_block">
                 <div class="user_personal_data">
                     <span class="label">Email:</span>
-                    <span class="data">c.williamson@gmail.com</span>
+                    {% for week_role in week_roles %}
+                        <span class="data">{{week_role.wor_engager.email}}</span>
+                    {% endfor %} 
                 </div>
             </div>
         </div>
@@ -93,25 +105,29 @@
         <div class="next_week_wor_leader">
             <h3 class="block_title block_title_engager">WOR LEADER</h3>
             <div class="user_information_block">
-                <div class="user_image">
-                    <img src="avatar1.png" alt="">
-                </div>
-                <div class="user_information">
-                    <span class="first_name">Cameron</span>
-                    <span class="last_name">Williamson</span> 
-                </div>
+                {% for next_week_role in next_week_roles %}
+                    <div class="user_image">
+                        <img src="{{next_week_role.wor_leader.user_image.url}}" alt="">
+                    </div>
+                    <div class="user_information">
+                        <span class="first_name">{{next_week_role.wor_leader.first_name}}</span>
+                        <span class="last_name">{{next_week_role.wor_leader.last_name}}</span> 
+                    </div>
+                {% endfor %}
             </div>
         </div>
         <div class="next_week_wor_engager">
             <h3 class="block_title block_title_engager">COMUNICATION ENGAGER</h3>
             <div class="user_information_block">
-                <div class="user_image">
-                    <img src="avatar2.png" alt="">
-                </div>
-                <div class="user_information">
-                    <span class="first_name">Cameron</span>
-                    <span class="last_name">Williamson</span> 
-                </div>
+                {% for next_week_role in next_week_roles %}
+                    <div class="user_image">
+                        <img src="{{next_week_role.wor_engager.user_image.url}}" alt="">
+                    </div>
+                    <div class="user_information">  
+                        <span class="first_name">{{next_week_role.wor_engager.first_name}}</span>
+                        <span class="last_name">{{next_week_role.wor_engager.last_name}}</span> 
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
