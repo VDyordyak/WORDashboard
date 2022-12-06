@@ -9,6 +9,8 @@ from django.contrib.auth.models import Group
 # Create your models here.
 class WOR_date (models.Model):
     wor_date = models.DateField(default=datetime.now, verbose_name="WOR date")
+    start_date  =models.DateField(default=datetime.now,blank=True, verbose_name="week start date")
+    end_date = models.DateField(default=datetime.now,blank=True, verbose_name="week end date")
     week_number = models.IntegerField(default="0", verbose_name="Week")
     
     def __str__(self):

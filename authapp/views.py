@@ -22,15 +22,31 @@ def dashboard(request):
         })
 @login_required
 def agenda(request):
-    return render(request, 'authapp/agenda.html',)
+    date = datetime.datetime.now()
+    current_week = date.strftime('%U')
+    week_roles = WeekAttendanceRoleManager.objects.filter(
+        users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
+        week_id = WOR_date.objects.get(week_number = current_week)
+        )
+    next_week_roles = WeekAttendanceRoleManager.objects.filter(
+        users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
+        week_id = WOR_date.objects.get(week_number = str(int(current_week)+1))
+        )
+    context = {
+        "week_roles": week_roles,
+        "next_week_roles": next_week_roles
+    }
+    return render(request, 'authapp/agenda.html', context=context)  
+
 
 def wor_calendar_generation(request):
     current_group_user_list = UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first())
-    user_list_count = UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first()).count()
     date = datetime.datetime.now()
 
     for i in range(52):
         current_week = date.strftime('%U')
+        start = date - datetime.timedelta(days=date.weekday())
+        end = start + datetime.timedelta(days=6)
         if current_week[0] == "0":
             current_week = int(current_week) % 10
         else:
@@ -38,7 +54,9 @@ def wor_calendar_generation(request):
 
         WOR_date.objects.get_or_create(
             wor_date = date,
-            week_number = current_week, 
+            week_start_date = start,
+            week_end_date = end,
+            week_number = current_week,
         )
         date = date + datetime.timedelta(days=7)
     ready_selected =  current_group_user_list[0].id

@@ -11,7 +11,7 @@ app_name = 'authapp'
 urlpatterns = [
     path('register/', register, name='register'),
     path('edit/', edit, name='edit'),
-    path('dashboard/', dashboard, name='dashboard'),
+    path('accounts/profile/', dashboard, name='dashboard'),
     path('agenda/', agenda, name='agenda'),
     path('', LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('generate/', wor_calendar_generation, name='calendar_generate'),
