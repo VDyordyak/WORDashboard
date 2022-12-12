@@ -68,23 +68,40 @@ def wor_calendar_generation(request):
         for j in range(current_group_user_list.count()):
             if current_group_user_list[j].id == ready_selected:
                 if current_group_user_list[j] == current_group_user_list[current_group_user_list.count()-1]:
-                    WeekAttendanceRoleManager.objects.get_or_create(
-                        week_id = WOR_date.objects.get(week_number = week.week_number),
-                        users_group = UserModel.objects.get(id = request.user.id).groups.first(),
-                        wor_leader = current_group_user_list[j],
-                        wor_engager = current_group_user_list[0],
-                    )
-                    ready_selected =  current_group_user_list[0].id
-                    break
+                    try:
+                        WeekAttendanceRole = WeekAttendanceRoleManager.objects.get(week_id = WOR_date.objects.get(week_number = week.week_number))
+                        WeekAttendanceRole.wor_leader = current_group_user_list[j]
+                        WeekAttendanceRole.wor_engager = current_group_user_list[0]
+                        WeekAttendanceRole.save()
+                        ready_selected =  current_group_user_list[0].id
+                        break
+                    except:
+                        WeekAttendanceRoleManager.objects.create(
+                            week_id = WOR_date.objects.get(week_number = week.week_number),
+                            users_group = UserModel.objects.get(id = request.user.id).groups.first(),
+                            wor_leader = current_group_user_list[j],
+                            wor_engager = current_group_user_list[0],
+                        )
+                        ready_selected =  current_group_user_list[0].id
+                        break 
                 else:
-                    WeekAttendanceRoleManager.objects.get_or_create(
-                        week_id =  WOR_date.objects.get(week_number = week.week_number),
-                        users_group = UserModel.objects.get(id = request.user.id).groups.first(),
-                        wor_leader = current_group_user_list[j],
-                        wor_engager = current_group_user_list[j+1],
-                    )
-                    ready_selected =  current_group_user_list[j+1].id
-                    break  
+                    try:
+                        WeekAttendanceRole = WeekAttendanceRoleManager.objects.get(week_id = WOR_date.objects.get(week_number = week.week_number))
+                        WeekAttendanceRole.wor_leader = current_group_user_list[j]
+                        WeekAttendanceRole.wor_engager = current_group_user_list[j+1]
+                        WeekAttendanceRole.save()
+                        ready_selected =  current_group_user_list[j+1].id
+                        break
+                    except:
+                        WeekAttendanceRoleManager.objects.get_or_create(
+                            week_id =  WOR_date.objects.get(week_number = week.week_number),
+                            users_group = UserModel.objects.get(id = request.user.id).groups.first(),
+                            wor_leader = current_group_user_list[j],
+                            wor_engager = current_group_user_list[j+1],
+                        )
+                        ready_selected =  current_group_user_list[j+1].id
+                        break
+                      
     return redirect('/accounts/settings/')
 
 def register(request):
@@ -104,10 +121,9 @@ def register(request):
             RecognitionManagerModel.objects.create(
                 user_profile = UserModel.objects.get(id = new_user.id)
             )
-            return render(request, 'authapp/register_done.html')
+            return redirect("/generate/")
     else:
         form = UserRegistration()
-
     context = {
         "form": form
     }
@@ -133,11 +149,33 @@ def settings(request):
     if request.POST.get('action') == 'update':
             import json
             from django.http import JsonResponse
-            responce = {}
-            wor_leader_update_list =  request.POST.get('wor_leaders_list')   
-            wor_engager_update_list = request.POST.get('wor_engagers_list')
+            wor_leader_update_list =  json.loads(request.POST.get('wor_leaders_list'))  
+            wor_engager_update_list = json.loads(request.POST.get('wor_engagers_list'))
+            responce ={
+                "user_id":'',
+                "week":''
+            }
+            wor_leader_update_week = wor_leader_update_list['week'].split(',')
+            wor_leader_update_id = wor_leader_update_list['user_id'].split(',')
 
-            return JsonResponse(wor_leader_update_list)
+            for i in range(len(wor_leader_update_id)):
+                try:
+                    week_for_update = WeekAttendanceRoleManager.objects.get(week_id = WOR_date.objects.get(week_number = wor_leader_update_week[i]))
+                    week_for_update.wor_leader = UserModel.objects.get(pk = int(wor_leader_update_id[i]))
+                    week_for_update.save()
+                except:
+                    pass
+            wor_engager_update_week = wor_engager_update_list['week'].split(',')
+            wor_engager_update_id = wor_engager_update_list['user_id'].split(',')
+            for i in range(len(wor_engager_update_id)):
+                try:
+                    week_for_update = WeekAttendanceRoleManager.objects.get(week_id = WOR_date.objects.get(week_number = wor_engager_update_week[i]))
+                    week_for_update.wor_engager = UserModel.objects.get(pk = int(wor_engager_update_id[i]))
+                    week_for_update.save()
+                except:
+                    pass
+
+            return JsonResponse(responce)
     try:
         week_list = WOR_date.objects.all()
         user_list = UserModel.objects.filter(groups = UserModel.objects.get(id = request.user.id).groups.first())

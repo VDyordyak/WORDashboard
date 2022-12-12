@@ -96,7 +96,7 @@
                                                                     <img src="{{user.user_image.url}}" alt="">
                                                                 </div>
                                                                 <div class="user_information">
-                                                                    <span class="first_name">{{user.first_name}}</span>
+                                                                    <span class="first_name">{{user.first_name}}{{user.pk}}</span>
                                                                     <span class="last_name">{{user.last_name}}</span>
                                                                 </div> 
                                                             </label>
@@ -164,11 +164,11 @@
     <script src="{% static '/js/account.js' %}"></script>  
     <script>
         $(document).on('submit', '#facilitator_update_for',function(e){
-            e.preventDefault();
+            // e.preventDefault();
             var users_to_update_list = $(this).find("input[type='radio']:checked");
 
-            var wor_leader_update_list = [];
-            var wor_engager_update_list =[];
+            var wor_leader_update_list = {};
+            var wor_engager_update_list ={};
             var week, element_value, user_id = "";
             
             for (let i=0; i<users_to_update_list.length;i++){
@@ -179,10 +179,8 @@
                     user_id = element_value[1].replace("id_", '');
                     // alert("Week: "+ week +"; User ID: "+ user_id+"; ");
                     if (($(users_to_update_list[i]).attr("name")).startsWith("leader")){
-                        wor_leader_update_list.push({
-                            week:   week,
-                            user_id: user_id
-                        });
+                        wor_leader_update_list["week"] += ","+week;
+                        wor_leader_update_list['user_id'] += ","+user_id;
                     } 
                     else if (($(users_to_update_list[i]).attr("name")).startsWith("engager")){
                         wor_engager_update_list["week"] += ","+week;
@@ -192,7 +190,7 @@
             }
             console.log("Leaders:/n")
             console.log(JSON.stringify(wor_leader_update_list));
-            console.log("Engagers:/n")
+            console.log("Engagers:/n"+ typeof JSON.stringify(wor_engager_update_list))
             console.log(JSON.stringify(wor_engager_update_list));
             $.ajax({
                 type:'POST',

@@ -366,9 +366,16 @@
 
                     assigned_user_list = response.assigned_users.replace(/,/ , '')
                     list_of_users = $('')
-                        form.find("input[type='checkbox']").prop('checked', false);
-                    for (id in assigned_user_list){
-                        form.find("input[type='checkbox']#"+assigned_user_list[id]+"").prop('checked', true);
+                    
+                    $(form).find("input[type='checkbox']").prop('checked', false);
+                    var checkbox_list = $(form).find("input[type='checkbox']")
+                    for (let i=0; i<assigned_user_list.length;i++){
+                        // form.find("input[type='checkbox']#"+assigned_user_list[id]+"").prop('checked', true);
+                        for (let j=0; j<$(checkbox_list).length;j++){
+                            if ($(checkbox_list[j]).attr("value") == assigned_user_list[i]){
+                                $(checkbox_list[j]).prop('checked', true);
+                            }  
+                        }  
                     }
 
                     var element = document.getElementById("edit-popup");

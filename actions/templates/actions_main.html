@@ -241,7 +241,7 @@
                                 {% for user in user_profile_list %}
                                     {% if user.groups.first == request.user.groups.first %}
                                         <li>
-                                            <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"
+                                            <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="action_editing_assigned_user"
                                             {% if user in action.assigned_user.all%}
                                                 checked
                                             {% endif%}
@@ -305,17 +305,23 @@
                 },
                 success: function (response) {
                     var form = $("form#action_editing_form");
-                    form.attr("value", response.action_pk);
-                    form.children('.checkboxes').children('.'+response.action_status+'').children('input').prop('checked', true);
-                    form.children('.form_fields').children('.deadline').children('input').attr("value",response.deadline_date);
-                    form.children('.form_fields').children('.action_form_title').children('input').attr("value",response.issue_name);
-                    form.children('.form_fields').children('.action_form_action').children('input').attr("value",response.action_text);
-                    form.children('.form_fields').children('.action_form_solution').children('input').attr("value",response.solution_text);
-                    assigned_user_list = response.assigned_users.replace(/,/ , '')
+                    $(form).attr("value", response.action_pk);
+                    $(form).children('.checkboxes').children('.'+response.action_status+'').children('input').prop('checked', true);
+                    $(form).children('.form_fields').children('.deadline').children('input').attr("value",response.deadline_date);
+                    $(form).children('.form_fields').children('.action_form_title').children('input').attr("value",response.issue_name);
+                    $(form).children('.form_fields').children('.action_form_action').children('input').attr("value",response.action_text);
+                    $(form).children('.form_fields').children('.action_form_solution').children('input').attr("value",response.solution_text);
+                    var assigned_user_list = response.assigned_users.replace(/,/ , '')
                     list_of_users = $('')
-                        form.find("input[type='checkbox']").prop('checked', false);
-                    for (id in assigned_user_list){
-                        form.find("input[type='checkbox']#"+assigned_user_list[id]+"").prop('checked', true);
+                    $(form).find("input[type='checkbox']").prop('checked', false);
+                    var checkbox_list = $(form).find("input[type='checkbox']")
+                    for (let i=0; i<assigned_user_list.length;i++){
+                        // form.find("input[type='checkbox']#"+assigned_user_list[id]+"").prop('checked', true);
+                        for (let j=0; j<$(checkbox_list).length;j++){
+                            if ($(checkbox_list[j]).attr("value") == assigned_user_list[i]){
+                                $(checkbox_list[j]).prop('checked', true);
+                            }  
+                        }  
                     }
                     
                     var element = document.getElementById("edit-popup");
