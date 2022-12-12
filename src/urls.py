@@ -10,6 +10,7 @@ urlpatterns = [
     path('actions/', include(('actions.urls', 'actions'), namespace='actions')),
     path('recognitions/', include(('recognitions.urls', 'recognition_page'), namespace='recognitions')),
     path('attendance/', include(('attendance.urls', 'recognition_page'), namespace='attendance')),
+    path('she/', include(('she.urls', 'she_page'), namespace='she')),
     path('admin/', admin.site.urls),
 ]
 

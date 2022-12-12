@@ -215,7 +215,6 @@ table tbody tr:first-of-type{
     color: #A50064;
 }
 .toggeled_content .attendance_content .names td, .attendance_content .names th {
-    display: block;
     width: 196px;
     overflow: hidden;
     white-space: nowrap;

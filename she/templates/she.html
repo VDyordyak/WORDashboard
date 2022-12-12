@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static '/css/she.css' %}">
+{% endblock styles %}
+{% block content %}
+    <div class="she-block" >
+        <h2 class="page-title">She</h2>
+        <div>
+            <img class="she-img" src="{% static '/img/she-img/she_1.png' %}" >
+            <div class="advertisement">
+                <img src="{% static '/img/she-img/she_2.png' %}">
+                <div class="advertisement_text">
+                    <p><b>Lorem ipsum dolor sit amet</b></br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nulla posuere sollicitudin aliquam ultrices sagittis orci.</p>
+                </div>
+            </div>
+            <div class="advertisement">
+                <img src="{% static '/img/she-img/she_3.png' %}">
+                <div class="advertisement_text">
+                    <p><b>Lorem ipsum dolor sit amet</b></br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nulla posuere sollicitudin aliquam ultrices sagittis orci.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="helpfull-tips" >
+        <h2 class="page-title">Helpful tips</h2>
+        <div class="tips">
+            <table>
+                <tr>
+                    <td><img src="{% static '/img/she-img/Alert.png' %}"></td>
+                    <td><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nulla posuere sollicitudin aliquam ultrices sagittis orci.</p></td>
+                </tr>
+                <tr>
+                    <td><img src="{% static '/img/she-img/Alert.png' %}"></td>
+                    <td><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nulla posuere sollicitudin aliquam ultrices sagittis orci.</p></td>
+                </tr>
+                <tr>
+                    <td><img src="{% static '/img/she-img/Alert.png' %}"></td>
+                    <td><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nulla posuere sollicitudin aliquam ultrices sagittis orci.</p></td>
+                </tr>
+                <tr>
+                    <td><img src="{% static '/img/she-img/Alert.png' %}"></td>
+                    <td><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nulla posuere sollicitudin aliquam ultrices sagittis orci.</p></td>
+                </tr>            
+            </table>
+        </div>   
+    </div>
+{% endblock content%}

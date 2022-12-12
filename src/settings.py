@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'actions.apps.ActionsConfig',
     'recognitions.apps.RecognitionsConfig',
     'attendance.apps.AttendanceConfig',
+    'she.apps.SheConfig',
     'bootstrap4'
 ]
 
