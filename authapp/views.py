@@ -23,25 +23,28 @@ def dashboard(request):
         })
 @login_required
 def agenda(request):
-    date = datetime.datetime.now()
-    current_week = date.strftime('%U')
-    week_roles = WeekAttendanceRoleManager.objects.filter(
-        users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
-        week_id = WOR_date.objects.get(week_number = current_week)
-        )
-    try:
-        next_week_roles = WeekAttendanceRoleManager.objects.filter(
+    if request.user.is_authenticated:
+        date = datetime.datetime.now()
+        current_week = date.strftime('%U')
+        week_roles = WeekAttendanceRoleManager.objects.filter(
             users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
-            week_id = WOR_date.objects.get(week_number = str(int(current_week)+1))
+            week_id = WOR_date.objects.get(week_number = current_week)
             )
-    except:
-        next_week_roles = ""
+        try:
+            next_week_roles = WeekAttendanceRoleManager.objects.filter(
+                users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
+                week_id = WOR_date.objects.get(week_number = str(int(current_week)+1))
+                )
+        except:
+            next_week_roles = ""
 
-    context = {
-        "week_roles": week_roles,
-        "next_week_roles": next_week_roles
-    }
-    return render(request, 'authapp/agenda.html', context=context)  
+        context = {
+            "week_roles": week_roles,
+            "next_week_roles": next_week_roles
+        }
+        return render(request, 'authapp/agenda.html', context=context)
+    else:
+        redirect("login/")
 
 
 def wor_calendar_generation(request):
@@ -113,15 +116,45 @@ def register(request):
                 form.cleaned_data.get('password')
             )
             new_user.save()
-            time.sleep(2)
+            time.sleep(1)
 
             new_user.groups.add(UserModel.objects.get(id = request.user.id).groups.first())
             new_user.save()
 
-            RecognitionManagerModel.objects.create(
+            RecognitionManagerModel.objects.get_or_create(
                 user_profile = UserModel.objects.get(id = new_user.id)
             )
-            return redirect("/generate/")
+            time.sleep(1)
+            # updating the attendance table base on new user creation date
+            date = datetime.datetime.now()
+            current_week = WOR_date.objects.get(week_number = date.strftime('%U'))
+            current_group_user_list = UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first())
+            ready_selected = WeekAttendanceRoleManager.objects.get(week_id = current_week).wor_engager.id
+
+            for week in WOR_date.objects.all():  
+                if week.week_number <= current_week.week_number:
+                    AttendanceManagerModel.objects.create(
+                        date = WOR_date.objects.get(week_number = week.week_number),
+                        person = UserModel.objects.get(id = new_user.id),
+                        user_status = 'comes_later',
+                    )
+                for j in range(current_group_user_list.count()):
+                    if week.week_number > current_week.week_number:
+                        if current_group_user_list[j].id == ready_selected:
+                            if current_group_user_list[j] == current_group_user_list[current_group_user_list.count()-1]:
+                                WeekAttendanceRole = WeekAttendanceRoleManager.objects.get(week_id = WOR_date.objects.get(week_number = week.week_number))
+                                WeekAttendanceRole.wor_leader = current_group_user_list[j]
+                                WeekAttendanceRole.wor_engager = current_group_user_list[0]
+                                WeekAttendanceRole.save()
+                                ready_selected =  current_group_user_list[0].id
+                                break
+                            else:
+                                WeekAttendanceRole = WeekAttendanceRoleManager.objects.get(week_id = WOR_date.objects.get(week_number = week.week_number))
+                                WeekAttendanceRole.wor_leader = current_group_user_list[j]
+                                WeekAttendanceRole.wor_engager = current_group_user_list[j+1]
+                                WeekAttendanceRole.save()
+                                ready_selected =  current_group_user_list[j+1].id
+                                break
     else:
         form = UserRegistration()
     context = {

@@ -13,8 +13,9 @@ urlpatterns = [
     path('accounts/edit/', edit, name='edit'),
     path('accounts/profile/', dashboard, name='dashboard'),
     path('accounts/settings/', settings, name='settings'),
-    path('agenda/', agenda, name='agenda'),
-    path('', LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('accounts/login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('', agenda, name='agenda'),
+    path('login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('generate/', wor_calendar_generation, name='calendar_generate'),
     path('logout/', LogoutView.as_view(template_name='authapp/logged_out.html'), name='logout'),
     path('password_change/', PasswordChangeView.as_view(

@@ -1,12 +1,16 @@
+/* Delete next style after development */
 .content-block{
-    min-height: 550px;
+    display: flex;
+    position: relative;
+    margin: 0px;
+    padding: 15px 50px;
 }
+/* ////////////////////////////////// */
 .toggeled_content {
     width: 94.333333%;
 }
 .she-block {
     display: block;
-    min-height: 540px;
     float: left;
     width: 55%;
 }

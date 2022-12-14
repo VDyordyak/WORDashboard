@@ -17,3 +17,6 @@ class RecognitionManagerModel(models.Model):
 
     def __str__(self):
         return self.user_profile.username
+    
+    class Meta:
+        ordering = ['user_profile']

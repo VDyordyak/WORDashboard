@@ -12,3 +12,6 @@ class UserModel(AbstractUser):
                                    verbose_name="Profile image")
     user_position = models.CharField(blank=True, max_length=255, verbose_name="User position")
     user_about = models.TextField(blank=True, verbose_name="About you")
+
+    class Meta:
+        ordering = ['first_name']

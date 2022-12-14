@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from authapp.views import *
+
 # Create your views here.
-def she_main(request):
-     return render(request, 'she.html', {
+def notice_board(request):
+    return render(request, 'notice-board.html', {
           'firstname' : request.user.first_name,
           'lastname' : request.user.last_name,
      })

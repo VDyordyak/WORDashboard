@@ -34,14 +34,15 @@ class AttendanceManagerModel(models.Model):
         ('present', 'PRESENT'),
         ('absent', 'ABSENT'),
         ('excused', 'EXCUSED'),
-        ('on_vacation', 'ON_VACATION')
+        ('on_vacation', 'ON_VACATION'),
+        ('comes_later', 'COMES_LATER')
     )
     date = models.ForeignKey(WOR_date, on_delete=models.CASCADE)
     person = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     user_status = models.CharField(max_length=11, choices=USER_STATUS, default='present')
 
     def __str__(self):
-        return self.person.username
+        return "Week#"+str(self.date.week_number) +' / ' +  self.person.username
 
     class Meta:
         ordering = ['date']

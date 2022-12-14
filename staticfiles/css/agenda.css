@@ -120,7 +120,7 @@
 }
 .user_description .user_information_block .user_image{
     display: block;
-    margin-top: 29px;
+    margin-top: 0px;
     width: 35%;
     float: left;
 }
@@ -173,10 +173,11 @@
     width: 100%;
 }
 .user_description  .user_personal_data_block .user_personal_data{
+    text-align: center;
     float: right;
     font-size: 12px;
     margin-top: 8px;
-    width: 65%;
+    width: 100%;
 }
 .user_description  .user_personal_data_block .user_personal_data .label{
     font-family: 'Roboto';
