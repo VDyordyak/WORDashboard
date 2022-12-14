@@ -1,17 +1,25 @@
 from django.core import serializers
 from django.shortcuts import render
-from django.shortcuts import get_object_or_404 
+from django.shortcuts import get_object_or_404
+from django.urls import reverse 
 from .models import RecognitionManagerModel
 from authapp.models import UserModel
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 # Create your views here.
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
 @login_required
 def recognition_page(request):
-    recognition_list = RecognitionManagerModel.objects.all()
+    recognition_list = RecognitionManagerModel.objects.order_by('-total_stars')
     user_list = UserModel.objects.all()
     response_data = {}
+
+    if request.POST.get('operation') == 'filter_by':
+        ordering = "-" + str(request.POST.get('filter_id'))
+        recognition_list = RecognitionManagerModel.objects.order_by(ordering)
+        return render(request, 'recognitions/templates/recognition_filter.html', {'recognition_list': recognition_list, 'user_list': user_list})
 
     if request.POST.get('action') == 'update_recognition':
         recognition_id = request.POST.get('recognition_id')
@@ -84,3 +92,4 @@ def recognition_update(request):
         return JsonResponse(response_data)
     
     return render(request, 'recognitions/templates/recognition.html')
+    

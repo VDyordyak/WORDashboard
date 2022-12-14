@@ -1,0 +1,157 @@
+{% load static %}
+{% for recognition in recognition_list%}
+    {% if recognition.user_profile.groups.first == request.user.groups.first %}
+        <div class="recognition_item">
+            <div class="member">
+                <img src="{{recognition.user_profile.user_image.url}}">
+                <span class="performer_name">{{recognition.user_profile.first_name}}</span>
+                <span class="performer_surname">{{recognition.user_profile.last_name}}</span>
+            </div>
+            <div class="member_stars">
+                <div class="star initiative">
+                    <img src="{% static '/img/star.svg' %}" name="initiative" id="{{recognition.id}}" class="star_click">
+                    <span name="initiative_{{recognition.id}}" id="{{recognition.id}}">{{recognition.initiative_value}}</span>
+                </div>
+                <div class="star ube">
+                    <img src="{% static '/img/star.svg' %}" name="ube" id="{{recognition.id}}" alt="" class="star_click">
+                    <span name="ube_{{recognition.id}}" id="{{recognition.id}}">{{recognition.understand_value}}</span>
+                </div>
+                <div class="star pwyp">
+                    <img src="{% static '/img/star.svg' %}" name="pwyp" id="{{recognition.id}}" alt="" class="star_click">
+                    <span name="pwyp_{{recognition.id}}" id="{{recognition.id}}">{{recognition.practice_value}}</span>
+                </div>
+                <div class="star resut_focus">
+                    <img src="{% static '/img/star.svg' %}" name="resut_focus" id="{{recognition.id}}" alt="" class="star_click">
+                    <span name="resut_focus_{{recognition.id}}" id="{{recognition.id}}">{{recognition.result_focus_value}}</span>
+                </div>
+                <div class="star know_yourself">
+                    <img src="{% static '/img/star.svg' %}" name="know_yourself" id="{{recognition.id}}" alt="" class="star_click">
+                    <span name="know_yourself_{{recognition.id}}" id="{{recognition.id}}">{{recognition.know_yourself_value}}</span>
+                </div>
+                <div class="star proactive_cooperation">
+                    <img src="{% static '/img/star.svg' %}" name="proactive_cooperation" id="{{recognition.id}}" alt="" class="star_click">
+                    <span name="proactive_cooperation_{{recognition.id}}" id="{{recognition.id}}">{{recognition.cooperation_value}}</span>
+                </div>
+
+            </div>
+            <div class="total_stars">
+                <span>Total:</span>
+                <span name="total_stars_{{recognition.id}}">{{recognition.total_stars}}</span>
+                <img class="dots" onclick="show_form('{{recognition.id}}')" src="{% static '/img/dots.png' %}">
+            </div>
+            <form  metod="POST" id="{{recognition.id}}" name ="form_{{recognition.id}}" class="stars_dropdown">
+                {% csrf_token %}
+                <div class="star">
+                    <button type="button" onclick="add('{{recognition.id}}','initiative')">
+                        <span>+</span>
+                    </button>
+                    <div class="initiative">
+                        <img src="{% static '/img/star.svg' %}"  alt="">
+                        <input name="initiative" type="text" value="{{recognition.initiative_value}}" readonly>
+                    </div>
+                    <button id="initiative" type="button" onclick="remove('{{recognition.id}}','initiative')">
+                        <span>-</span>
+                    </button>
+                </div>
+                <div class="star">
+                    <button type="button" onclick="add('{{recognition.id}}','ube')">
+                        <span>+</span>
+                    </button>
+                    <div class="ube">
+                        <img src="{% static '/img/star.svg' %}"  alt="">
+                        <input name="ube" type="text" value="{{recognition.understand_value}}" readonly>
+                    </div>
+                    <button type="button" onclick="remove('{{recognition.id}}','ube')">
+                        <span>-</span>
+                    </button>
+                </div>
+                <div class="star">
+                    <button type="button" onclick="add('{{recognition.id}}','pwyp')">
+                        <span>+</span>
+                    </button>
+                    <div class="pwyp">
+                        <img src="{% static '/img/star.svg' %}"  alt="">
+                        <input name="pwyp" type="text" value="{{recognition.practice_value}}" readonly>
+                    </div>
+                    <button type="button" onclick="remove('{{recognition.id}}','pwyp')">
+                        <span>-</span>
+                    </button>
+                </div>
+                <div class="star">
+                    <button type="button" onclick="add('{{recognition.id}}','resut_focus')">
+                        <span>+</span>
+                    </button>
+                    <div class="resut_focus">
+                        <img src="{% static '/img/star.svg' %}"  alt="">
+                        <input name="resut_focus" type="text" value="{{recognition.result_focus_value}}" readonly>
+                    </div>
+                    <button type="button" onclick="remove('{{recognition.id}}','resut_focus')">
+                        <span>- </span>
+                    </button>
+                </div>
+                <div class="star">
+                    <button type="button" onclick="add('{{recognition.id}}','know_yourself')">
+                        <span>+</span>
+                    </button>
+                    <div class="know_yourself">
+                        <img src="{% static '/img/star.svg' %}"  alt="">
+                        <input name="know_yourself" type="text" value="{{recognition.know_yourself_value}}" readonly>
+                    </div>
+                    <button type="button" onclick="remove('{{recognition.id}}','know_yourself')">
+                        <span>-</span>
+                    </button>
+                </div>
+                <div class="star">
+                    <button type="button" onclick="add('{{recognition.id}}','proactive_cooperation')">
+                        <span>+</span>
+                    </button>
+                    <div class="proactive_cooperation">
+                        <img src="{% static '/img/star.svg' %}"  alt="">
+                        <input name="proactive_cooperation" type="text" value="{{recognition.cooperation_value}}" readonly>
+                    </div>
+                    <button type="button" onclick="remove('{{recognition.id}}','proactive_cooperation')">
+                        <span>-</span>
+                    </button>
+                </div>
+                <div class="submitting_button">
+                    <button  class="submitting_form_button" id="{{recognition.id}}" type="submit"></button>
+                </div>
+            </form>
+        </div>
+    {% endif%}
+{% endfor%}
+<script>
+    //Updating recognition star using ajax
+    $('.star_click').click(function(){
+        $.ajax({
+                type: "POST",
+                url: '{% url "recognitions:recognition_page" %}',
+                data: {
+                    'recognition_id': $(this).attr('id'),
+                    'operation':'add_star',
+                    'type_of_star': $(this).attr('name'),
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function(response) {
+                    span_name = response.type_of_star+'_'+response.recognition_id
+                    total_stars_name = "total_stars_"+response.recognition_id
+                    $("span[name="+span_name+"]").html(parseInt($("span[name="+span_name+"]").text())+1);
+                    $("span[name="+total_stars_name+"]").html(parseInt($("span[name="+total_stars_name+"]").text())+1);
+                    
+                    target_input = $("form[name=form_"+response.recognition_id+"]").children().children('.'+response.type_of_star+'').children('input')
+                    value= target_input.val();
+                    target_input.attr( "value", function( arr ) {
+                        return parseInt(value)+1;
+                    })
+                    
+                },
+                error : function(xhr,errmsg,err) {
+                    $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                        " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+
+            });
+
+    })
+</script>

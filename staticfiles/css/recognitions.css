@@ -76,6 +76,7 @@
 }
 .dropdown .dropdown-select{
     display: flex;
+    position: relative;
     flex-direction: row;
     align-items: center;
     padding: 8px 8px 8px 16px;
@@ -98,9 +99,10 @@
 .dropdown .dropdown-select:after{
     content: url('menu-img/filter.svg');
     display: inline-block;
+    position: absolute;
     width: 15px;
     height: 15px;
-    margin-left: 80px;
+    right: 5px;
 }
 .dropdown .dropdown-select-menu{
     position: absolute;
@@ -165,9 +167,9 @@
     float: left;
     margin: 0px 0px 12px 8px;
     padding: 8px 9px 0px 9px;
-    width: 18.5%;
+    width: 23%;
     min-width: 218px;
-    max-width: 220px;
+    max-width: 300px;
     background: #FFFFFF;
     border: 2px solid rgba(128, 128, 128, 0.199);
     /* Drop Shadow */
