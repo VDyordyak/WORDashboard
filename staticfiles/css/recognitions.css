@@ -189,7 +189,6 @@
 }
 .recognition_block .recognition_item .member img {
     display: inline-block;
-    float:left;
     height: 50px;
     width: 50px;
     border-radius: 50%;
