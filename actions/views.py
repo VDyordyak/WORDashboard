@@ -1,7 +1,6 @@
 import time
 import json
 from tokenize import group 
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import ActionTaskManagerModel
 from authapp.models import UserModel
@@ -10,7 +9,8 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 
 
-@login_required
+from django.contrib.auth.decorators import login_required
+@login_required(login_url='/login/')
 def actions(request):
     action_list = ActionTaskManagerModel.objects.all()
     user_profile_list = UserModel.objects.all()

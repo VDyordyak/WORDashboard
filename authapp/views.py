@@ -1,16 +1,29 @@
 from django.http import request
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from .forms import UserRegistration, UserEditForm
-from .models import UserModel
+from .models import UserModel, GroupAdmin
 from recognitions.models import RecognitionManagerModel
 from attendance.models import AttendanceManagerModel, WOR_date, WeekAttendanceRoleManager
 import datetime
+from datetime import timedelta
 import time
 
 # Create your views here.
+def user_present(user_id):
+    date = datetime.datetime.now()
+    user_last_login = UserModel.objects.get(pk = user_id).last_login + timedelta(hours = 2)
+    user_last_login_date = user_last_login.strftime('%y-%m-%d')
+    user_last_login_time = user_last_login.strftime('%H')
+    current_date = date.strftime('%y-%m-%d')
+    current_time = date.strftime('%H')
 
-@login_required
+    if (user_last_login_date == current_date and int(user_last_login_time) - int(current_time)<1) :
+        return True
+    else:
+        return False
+
+@login_required(login_url='/login/')
 def dashboard(request):
     context = {
         "welcome": "Welcome to your dashboard"
@@ -23,30 +36,43 @@ def dashboard(request):
         })
 
 def agenda(request):
+
     if request.user.is_authenticated:
         date = datetime.datetime.now()
         current_week = date.strftime('%U')
-        week_roles = WeekAttendanceRoleManager.objects.filter(
+        week_roles = WeekAttendanceRoleManager.objects.get(
             users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
             week_id = WOR_date.objects.get(week_number = current_week)
             )
-        try:
-            next_week_roles = WeekAttendanceRoleManager.objects.filter(
-                users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
-                week_id = WOR_date.objects.get(week_number = str(int(current_week)+1))
-                )
-        except:
-            next_week_roles = ""
+        this_group_admin = GroupAdmin.objects.get(group = UserModel.objects.get(id = request.user.id).groups.first()).admin
 
+        next_week_roles = WeekAttendanceRoleManager.objects.get(
+            users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
+            week_id = WOR_date.objects.get(week_number = str(int(current_week)+1))
+            )
+        
+        if user_present(week_roles.wor_leader.pk):
+            pass
+        else:
+            if user_present(week_roles.wor_engager.pk):
+                next_week_roles.wor_leader = week_roles.wor_leader
+                next_week_roles.save()
+                week_roles.wor_leader = week_roles.wor_engager
+                week_roles.save()
+            else:
+                if user_present(this_group_admin.pk):
+                    pass
+                else:
+                    message = "all users"
         context = {
-            "week_roles": week_roles,
-            "next_week_roles": next_week_roles
+            "week_role": week_roles,
+            "next_week_role": next_week_roles
         }
         return render(request, 'authapp/agenda.html', context=context)
     else:
-        redirect("login/")
+        return redirect("/login/")
 
-@login_required
+@login_required(login_url='/login/')
 def wor_calendar_generation(request):
     current_group_user_list = UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first())
     date = datetime.datetime.now()
@@ -107,7 +133,7 @@ def wor_calendar_generation(request):
                       
     return redirect('/accounts/settings/')
 
-@login_required
+@login_required(login_url='/login/')
 def register(request):
     if request.method == 'POST':
         form = UserRegistration(request.POST or None)
@@ -164,7 +190,7 @@ def register(request):
 
     return render(request, 'authapp/register.html', context=context)
 
-@login_required
+@login_required(login_url='/login/')
 def edit(request):
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user,
@@ -178,7 +204,7 @@ def edit(request):
     }
     return render(request, 'authapp/edit.html', context=context)
 
-@login_required
+@permission_required('Can view session')
 def settings(request):
     if request.POST.get('action') == 'update':
             import json

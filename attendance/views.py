@@ -4,7 +4,8 @@ from .models import AttendanceManagerModel, WOR_date, WeekAttendanceRoleManager
 import datetime
 import time
 import json
-
+from django.contrib.auth.decorators import login_required
+@login_required(login_url='/login/')
 # Create your views here.
 def attendance(request):
     week_list = WOR_date.objects.all()

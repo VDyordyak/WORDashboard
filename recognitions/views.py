@@ -5,12 +5,12 @@ from django.urls import reverse
 from .models import RecognitionManagerModel
 from authapp.models import UserModel
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 # Create your views here.
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
-@login_required
+from django.contrib.auth.decorators import login_required
+@login_required(login_url='/login/')
 def recognition_page(request):
     recognition_list = RecognitionManagerModel.objects.all()
     user_list = UserModel.objects.all()
@@ -76,6 +76,7 @@ def recognition_page(request):
     
     return render(request, 'recognitions/templates/recognition.html', {'recognition_list': recognition_list, 'user_list': user_list})
 
+@login_required(login_url='/login/')
 def recognition_update(request):
     response_data = {}
     if request.POST.get('operation') == 'add_star':
