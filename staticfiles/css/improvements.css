@@ -189,7 +189,7 @@
 
 .improvement_form .checkbox-dropdown-list {
     list-style: none;
-    width: 180px;
+    width: 280px;
     margin: 0;
     padding: 0;
     position: absolute;
@@ -309,8 +309,8 @@
 .members img {
     padding-right: 8px;
     border-radius: 50%;
-    width: 32px;
-    height: 28px;
+    width: 35px;
+    height: 35px;
 }
 .members img:first-of-type{
     margin-left: 4%;
@@ -428,13 +428,6 @@
     border-top: 1px solid rgba(52, 34, 13, 0.3);
     padding-top: 10px;
 }
-.members img {
-    padding-right: 8px;
-    border-radius: 50%;
-}
-.members img:first-of-type{
-    margin-left: 4%;
-}
 .dates {
     padding-top: 16px;
     margin-left: 6%;
@@ -460,7 +453,7 @@
         padding-right: 0;
     }
     .members {
-        height: 39px;
+        height: 45px;
         overflow: hidden;
     }
     .start-date::after {
@@ -505,7 +498,7 @@
         padding-right: 3px;
     }
     .members {
-        height: 39px;
+        height: 45px;
         overflow: hidden;
     }
     .start-date::after {
@@ -770,7 +763,7 @@
 
 .improvement_form_editing .checkbox-dropdown-list {
     list-style: none;
-    width: 180px;
+    width: 280px;
     margin: 0;
     padding: 0;
     position: absolute;

@@ -12,7 +12,7 @@ from django.http import JsonResponse
 
 @login_required
 def recognition_page(request):
-    recognition_list = RecognitionManagerModel.objects.order_by('-total_stars')
+    recognition_list = RecognitionManagerModel.objects.all()
     user_list = UserModel.objects.all()
     response_data = {}
 

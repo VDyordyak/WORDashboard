@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Facilitator settings{% endblock title %}
+{% block page-title %} | Facilitator settings{% endblock page-title %}
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/account.css' %}">
 {% endblock styles %}
 {% block content %}
     <div class="headling">
         <div class="btns">
-            <a href="{% url 'authapp:calendar_generate' %}" ><img src="{% static '/img/update.png' %}" alt="update page"> <span class="update">Generate</span></a>
-            <a href="{% url 'authapp:register' %}" ><img src="{% static '/img/add_btn.png' %}" alt="update page"> <span class="update">Add user</span></a>
+            <a href="{% url 'authapp:calendar_generate' %}" ><img src="{% static '/img/update.png' %}" alt="Update page"> <span class="update">Generate</span></a>
+            <a href="{% url 'authapp:register' %}" ><img src="{% static '/img/add_btn.png' %}" alt="Add user"> <span class="update">Add user</span></a>
         </div>
         <h2 class="page-title">Settings</h2>
         <div class="content_tabs">
@@ -24,10 +24,10 @@
 
                 </div>
                 <div class="wor_leader">
-                    <img src="{% static '/img/leader_icon.svg' %}" alt="">
+                    <img src="{% static '/img/leader_icon.svg' %}" alt="Leader icon">
                 </div>
                 <div class="wor_engager">
-                    <img src="{% static '/img/engager_icon.svg' %}" alt="">
+                    <img src="{% static '/img/engager_icon.svg' %}" alt="Engager icon">
                 </div>
             </div>
             {% for week in week_list %}
@@ -42,7 +42,9 @@
                                 <div class="wor_leader">
                                     <div class="user_profile">
                                         <div class="user_image">
-                                            <img src="{{week_role.wor_leader.user_image.url}}" alt="">
+                                            <img src="{{week_role.wor_leader.user_image.url}}" 
+                                                 alt="{{week_role.wor_leader.first_name}} {{week_role.wor_leader.last_name}}"
+                                                 title="{{week_role.wor_leader.first_name}} {{week_role.wor_leader.last_name}}">
                                         </div>
                                         <div class="user_information">
                                             <span class="first_name">{{week_role.wor_leader.first_name}} </span>
@@ -58,7 +60,9 @@
                                                         <input type="radio" id="week_{{week.week_number}}_leader_{{user.pk}}" value="week_{{week.week_number}}-id_{{user.pk}}" name="leader_week_{{week.week_number}}" /> 
                                                         <label for="week_{{week.week_number}}_leader_{{user.pk}}" id="leader_id_{{user.pk}}">
                                                             <div class="user_image">
-                                                                <img src="{{user.user_image.url}}" alt="">
+                                                                <img src="{{user.user_image.url}}" 
+                                                                     alt="{{user.first_name}} {{user.last_name}}"
+                                                                     title="{{user.first_name}} {{user.last_name}}">
                                                             </div>
                                                             <div class="user_information">
                                                                 <span class="first_name">{{user.first_name}}</span>
@@ -77,10 +81,12 @@
                                 <div class="wor_engager">
                                     <div class="user_profile">
                                         <div class="user_image">
-                                            <img src="{{week_role.wor_engager.user_image.url}}" alt="">
+                                            <img src="{{week_role.wor_engager.user_image.url}}" 
+                                                 alt="{{week_role.wor_engager.first_name}} {{week_role.wor_engager.last_name}}"
+                                                 title="{{week_role.wor_engager.first_name}} {{week_role.wor_engager.last_name}}">
                                         </div>
                                         <div class="user_information">
-                                            <span class="first_name">{{week_role.wor_engager.first_name}} </span>
+                                            <span class="first_name">{{week_role.wor_engager.first_name}}</span>
                                             <span class="last_name">{{week_role.wor_engager.last_name}}</span>
                                             <span class="email" style="display: none;">{{week_role.wor_engager.email}}</span>
                                             <span class="position" style="display: none;">{{week_role.wor_engager.user_position}}</span>
@@ -93,10 +99,12 @@
                                                             <input type="radio" id="week_{{week.week_number}}_engager_{{user.pk}}" value="week_{{week.week_number}}-id_{{user.pk}}" name="engager_week_{{week.week_number}}" /> 
                                                             <label for="week_{{week.week_number}}_engager_{{user.pk}}" id="engager_id_{{user.pk}}">
                                                                 <div class="user_image">
-                                                                    <img src="{{user.user_image.url}}" alt="">
+                                                                    <img src="{{user.user_image.url}}" 
+                                                                         alt="{{user.first_name}} {{user.last_name}}"
+                                                                         title="{{user.first_name}} {{user.last_name}}">
                                                                 </div>
                                                                 <div class="user_information">
-                                                                    <span class="first_name">{{user.first_name}}{{user.pk}}</span>
+                                                                    <span class="first_name">{{user.first_name}}</span>
                                                                     <span class="last_name">{{user.last_name}}</span>
                                                                 </div> 
                                                             </label>
@@ -120,7 +128,9 @@
                     <div class="user_description" style="margin-bottom: 56px;">
                         <div class="user_information_block">
                             <div class="user_image">
-                                <img src="{{role.wor_leader.user_image.url}}" alt="">
+                                <img alt="{{role.wor_leader.first_name}} {{role.wor_leader.last_name}}" 
+                                     title="{{role.wor_leader.first_name}} {{role.wor_leader.last_name}}" 
+                                     src="{{role.wor_leader.user_image.url}}">
                             </div>
                             <div class="user_information">
                                 <h3 class="block_title">WOR LEADER</h3>
@@ -138,7 +148,9 @@
                     <div class="user_description">
                         <div class="user_information_block">
                             <div class="user_image">
-                                <img src="{{role.wor_engager.user_image.url}}" alt="">
+                                <img src="{{role.wor_engager.user_image.url}}" 
+                                     alt="{{role.wor_engager.first_name}} {{role.wor_engager.last_name}}"
+                                     title="{{role.wor_engager.first_name}} {{role.wor_engager.last_name}}">
                             </div>
                             <div class="user_information">
                                 <h3 class="block_title block_title_engager">COMUNICATION ENGAGER</h3>

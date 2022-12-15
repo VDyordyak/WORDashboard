@@ -21,7 +21,7 @@ def dashboard(request):
         'profile_information': profile_information, 
         'date_now': str(type(datetime.date(2022,1,1).strftime('%U'))),
         })
-@login_required
+
 def agenda(request):
     if request.user.is_authenticated:
         date = datetime.datetime.now()
@@ -46,7 +46,7 @@ def agenda(request):
     else:
         redirect("login/")
 
-
+@login_required
 def wor_calendar_generation(request):
     current_group_user_list = UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first())
     date = datetime.datetime.now()
@@ -107,6 +107,7 @@ def wor_calendar_generation(request):
                       
     return redirect('/accounts/settings/')
 
+@login_required
 def register(request):
     if request.method == 'POST':
         form = UserRegistration(request.POST or None)

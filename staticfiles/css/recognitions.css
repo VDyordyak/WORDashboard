@@ -164,6 +164,7 @@
 .recognition_block .recognition_item{
     /* Auto layout */
     display: block;
+    position: relative;
     float: left;
     margin: 0px 0px 12px 8px;
     padding: 8px 9px 0px 9px;
@@ -281,12 +282,10 @@
     justify-content: space-between;
     float: left;
     position: absolute;
-    z-index: 0;
-    padding: 8px 9px 0px 9px;
+    z-index: 1;
+    padding: 8px 12px 0px;
     margin-left: -11px;
     width: calc(18.5%);
-    min-width: 170px;
-    max-width: 220px;
     background: #FFFFFF;
     border: 2px solid rgba(128, 128, 128, 0.199);
     /* Drop Shadow */
@@ -295,6 +294,7 @@
 }
 .stars_dropdown.show_form{
     display: flex;
+    width: calc(100% + 4px);
 }
 .recognition_block .stars_dropdown .star img{
     width: 15px;

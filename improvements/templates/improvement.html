@@ -9,7 +9,7 @@
     <div>
         <div class="btns">
             <a href="#" style="float: right;" onclick="openForm()">
-                <img src="{% static 'img/add_btn.png' %}"> 
+                <img src="{% static 'img/add_btn.png' %}" alt="Add improvement"> 
                 <span class="add-task">Add Task</span>
             </a>
         </div>
@@ -25,7 +25,7 @@
                             <div class="date-status">
                                 <span class="to-do-status">TO DO</span> 
                                 <span class="task-date">{{improvement.creation_date}} 
-                                    <a id="{{improvement.pk}}" class="title_click" href="#" ><img class="dots" src="{% static 'img/dots.png' %}"></a>
+                                    <a id="{{improvement.pk}}" class="title_click" href="#" ><img class="dots" alt="Edit" title="Edit" title="Edit" alt="Edit" src="{% static 'img/dots.png' %}"></a>
                                 </span>
                             </div>
                             <div class="task-text">
@@ -34,7 +34,9 @@
                             </div>
                             <div class="members">
                                 {% for user in improvement.assigned_user.all %}
-                                    <img src="{{ user.user_image.url }}">
+                                    <img src="{{ user.user_image.url }}"
+                                         alt="{{user.first_name}} {{user.last_name}}"
+                                         title="{{user.first_name}} {{user.last_name}}">
                                 {% endfor %}
                             </div>
                             <div class="dates">
@@ -57,7 +59,7 @@
                             <div class="date-status">
                                 <span class="in-progress-status">IN PROGRESS</span> 
                                 <span class="task-date">{{improvement.creation_date}}
-                                    <a id="{{improvement.pk}}"  class="title_click" href="#"><img class="dots" src="{% static 'img/dots.png' %}"></a>
+                                    <a id="{{improvement.pk}}"  class="title_click" href="#"><img class="dots" alt="Edit" title="Edit" src="{% static 'img/dots.png' %}"></a>
                                 </span>
                             </div>
                             <div class="task-text">
@@ -66,7 +68,10 @@
                             </div>
                             <div class="members">
                                 {% for user in improvement.assigned_user.all %}
-                                    <img src="{{ user.user_image.url }}">
+                                    <img src="{{ user.user_image.url }}"
+                                         alt="{{user.first_name}} {{user.last_name}}"
+                                         title="{{user.first_name}} {{user.last_name}}"
+                                    >
                                 {% endfor %}    
                             </div>
                             <div class="dates">
@@ -89,7 +94,7 @@
                             <div class="date-status">
                                 <span  class="review-status">REVIEW</span> 
                                 <span class="task-date">{{improvement.creation_date}}
-                                    <a id="{{improvement.pk}}" class="title_click" href="#"><img class="dots" src="{% static 'img/dots.png' %}"></a>
+                                    <a id="{{improvement.pk}}" class="title_click" href="#"><img class="dots" alt="Edit" title="Edit" src="{% static 'img/dots.png' %}"></a>
                                 </span>
                             </div>
                             <div class="task-text">
@@ -98,7 +103,10 @@
                             </div>
                             <div class="members">
                                 {% for user in improvement.assigned_user.all %}
-                                    <img src="{{ user.user_image.url }}">
+                                    <img src="{{ user.user_image.url }}"
+                                         alt="{{user.first_name}} {{user.last_name}}"
+                                         title="{{user.first_name}} {{user.last_name}}"
+                                    >
                                 {% endfor %} 
                             </div>
                             <div class="dates">
@@ -121,7 +129,7 @@
                             <div class="date-status">
                                 <span class="done-status">DONE</span> 
                                 <span class="task-date">{{improvement.creation_date}}
-                                    <a id="{{improvement.pk}}" class="title_click" href="#"><img class="dots" src="{% static 'img/dots.png' %}"></a>
+                                    <a id="{{improvement.pk}}" class="title_click" href="#"><img class="dots" alt="Edit" title="Edit" src="{% static 'img/dots.png' %}"></a>
                                 </span>
                             </div>
                             <div class="task-text">
@@ -130,7 +138,10 @@
                             </div>
                             <div class="members">
                                 {% for user in improvement.assigned_user.all %}
-                                    <img src="{{ user.user_image.url }}">
+                                    <img src="{{ user.user_image.url }}"
+                                         alt="{{user.first_name}} {{user.last_name}}"
+                                         title="{{user.first_name}} {{user.last_name}}"
+                                    >
                                 {% endfor %} 
                             </div>
                             <div class="dates">
@@ -191,7 +202,7 @@
                                 <li>
                                     <input type="checkbox" id="all_users" value="all" name="assigned_user">
                                     <label for="all_users">
-                                        <img src="{% static '/img/default_user_image.png' %}">
+                                        <img alt="All users selector" title="All users selector" src="{% static '/img/default_user_image.png' %}">
                                         <span class="performer_name">All</span>
                                         <span class="performer_surname">Users</span>
                                     </label>
@@ -201,7 +212,10 @@
                                     <li>
                                         <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"/>
                                         <label for="{{user.pk}}">
-                                            <img src="{{user.user_image.url}}">
+                                            <img src="{{user.user_image.url}}"
+                                                 alt="{{user.first_name}} {{user.last_name}}"
+                                                 title="{{user.first_name}} {{user.last_name}}"   
+                                            >
                                             <span class="performer_name">{{user.first_name}}</span>
                                             <span class="performer_surname">{{user.last_name}}</span> 
                                         </label>
@@ -215,7 +229,7 @@
                 <div class="form_fields timeline">
                     <legend class="legend_label">Timeline</legend>
                     <input type="date" id="start_date" class="start_date" required>
-                    <div class="arrow"> <img src="{% static 'img/arrow.png' %}" alt=""></div>
+                    <div class="arrow"> <img src="{% static 'img/arrow.png' %}" alt="from-to"></div>
                     <input type="date" id="deadline_date" class="deadline_date" required>   
                 </div>
                 <div class="form_fields">
@@ -275,7 +289,10 @@
                                     <li>
                                         <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"/>
                                         <label for="{{user.pk}}">
-                                            <img src="{{user.user_image.url}}">
+                                            <img src="{{user.user_image.url}}"
+                                                 alt="{{user.first_name}} {{user.last_name}}"
+                                                 title="{{user.first_name}} {{user.last_name}}"   
+                                            >
                                             <span class="performer_name">{{user.first_name}}</span>
                                             <span class="performer_surname">{{user.last_name}}</span> 
                                         </label>
@@ -289,7 +306,7 @@
                 <div class="form_fields timeline">
                     <legend class="legend_label">Timeline</legend>
                     <input type="date" id="start_date" class="start_date" required>
-                    <div class="arrow"> <img src="{% static 'img/arrow.png' %}" alt=""></div>
+                    <div class="arrow"> <img src="{% static 'img/arrow.png' %}" alt="from-to"></div>
                     <input type="date" id="deadline_date" class="deadline_date" required>   
                 </div>
                 <div class="form_fields">

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% block page-title %} | Agenda{% endblock page-title %}
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{% static '/css/agenda.css' %}">
 {% endblock styles %}
@@ -107,7 +107,9 @@
             <div class="user_information_block">
                 {% for next_week_role in next_week_roles %}
                     <div class="user_image">
-                        <img src="{{next_week_role.wor_leader.user_image.url}}" alt="">
+                        <img src="{{next_week_role.wor_leader.user_image.url}}" 
+                             alt="{{next_week_role.wor_leader.first_name}} {{next_week_role.wor_leader.last_name}}"
+                             title="{{next_week_role.wor_leader.first_name}} {{next_week_role.wor_leader.last_name}}">
                     </div>
                     <div class="user_information">
                         <span class="first_name">{{next_week_role.wor_leader.first_name}}</span>
@@ -121,7 +123,9 @@
             <div class="user_information_block">
                 {% for next_week_role in next_week_roles %}
                     <div class="user_image">
-                        <img src="{{next_week_role.wor_engager.user_image.url}}" alt="">
+                        <img src="{{next_week_role.wor_engager.user_image.url}}" 
+                             alt="{{next_week_role.wor_engager.first_name}} {{next_week_role.wor_engager.last_name}}"
+                             title="{{next_week_role.wor_engager.first_name}} {{next_week_role.wor_engager.last_name}}">
                     </div>
                     <div class="user_information">  
                         <span class="first_name">{{next_week_role.wor_engager.first_name}}</span>

@@ -17,15 +17,17 @@
     {% block styles %}
 
     {% endblock styles %}
-    <title>WOR</title>
-
+    <title>WOR {% block page-title %}{% endblock page-title %}</title>
+    {% block meta-data %}
+    
+    {% endblock meta-data %}
   </head>
   <body>
       <header id="header"><!-- class="toggeled" Will be added once click at toggle button -->
         <nav class=".navbar-expand-xl|lg|md|sm menu">
         <div class="logo-block">
             <a class="navbar-brand" href="#">
-                <img src="{% static '/img/logo-nestle.png' %}" class="logo-img" alt="logo">
+                <img src="{% static '/img/logo-nestle.png' %}" class="logo-img" alt="Nestle logo">
            
                 <span class="logo-text">NBS Lviv Web Content</br> Management Team</span>
             </a>

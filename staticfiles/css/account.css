@@ -430,7 +430,7 @@
 /* /////////// FORM ACTION BUTTONS ////////////////////// */
 .right-sidebar .action_buttons{
     display: flex;
-    height: 60px;
+    height: 80px;
     align-items: flex-end;
     width: 100%;
     justify-content: flex-end;
