@@ -18,7 +18,7 @@ def user_present(user_id):
     current_date = date.strftime('%y-%m-%d')
     current_time = date.strftime('%H')
 
-    if (user_last_login_date == current_date and int(user_last_login_time) - int(current_time)<1) :
+    if (user_last_login_date == current_date and int(current_time)- int(user_last_login_time) <2):
         return True
     else:
         return False
@@ -36,7 +36,6 @@ def dashboard(request):
         })
 
 def agenda(request):
-
     if request.user.is_authenticated:
         date = datetime.datetime.now()
         current_week = date.strftime('%U')
@@ -50,25 +49,44 @@ def agenda(request):
             users_group = UserModel.objects.get(id = request.user.id).groups.first(), 
             week_id = WOR_date.objects.get(week_number = str(int(current_week)+1))
             )
-        
-        if user_present(week_roles.wor_leader.pk):
-            pass
-        else:
-            if user_present(week_roles.wor_engager.pk):
-                next_week_roles.wor_leader = week_roles.wor_leader
-                next_week_roles.save()
-                week_roles.wor_leader = week_roles.wor_engager
-                week_roles.save()
+        message = ""
+        if request.POST.get('action') == 'change_leader':
+            if user_present(week_roles.wor_leader.pk):
+                message = "wor_leader"
             else:
-                if user_present(this_group_admin.pk):
-                    pass
+                if user_present(week_roles.wor_engager.pk) and request.user == week_roles.wor_engager:
+                    next_week_roles.wor_leader = week_roles.wor_leader
+                    next_week_roles.save()
+                    week_roles.wor_leader = week_roles.wor_engager
+                    week_roles.save()
+                    message = "wor_engager"
                 else:
-                    message = "all users"
+                    this_week_leader = week_roles.wor_leader
+                    week_roles.wor_leader = request.user
+                    week_roles_list = WeekAttendanceRoleManager.objects.filter( users_group = UserModel.objects.get(id = request.user.id).groups.first())
+                    for week in week_roles_list:
+                        if week.week_id > current_week:
+                            if request.user == week.wor_leader:
+                                week.wor_leader = this_week_leader
+                                week.save()
+                    week_roles.save()
+            context = {
+                "wor_leader_peresent": user_present(week_roles.wor_leader.pk),
+                "wor_engager_peresent": user_present(week_roles.wor_engager.pk), 
+                "message" : message,
+                "week_role": week_roles,
+                "next_week_role": next_week_roles
+            }
+            return render(request, 'account/agenda-facilitators.html', context=context)
+
         context = {
+            "wor_leader_peresent": user_present(week_roles.wor_leader.pk),
+            "wor_engager_peresent": user_present(week_roles.wor_engager.pk), 
+            "message" : message,
             "week_role": week_roles,
             "next_week_role": next_week_roles
         }
-        return render(request, 'authapp/agenda.html', context=context)
+        return render(request, 'account/agenda.html', context=context)
     else:
         return redirect("/login/")
 
@@ -215,8 +233,14 @@ def settings(request):
                 "user_id":'',
                 "week":''
             }
-            wor_leader_update_week = wor_leader_update_list['week'].split(',')
-            wor_leader_update_id = wor_leader_update_list['user_id'].split(',')
+            try:
+                wor_leader_update_week = wor_leader_update_list['week'].split(',')
+            except:
+                wor_leader_update_week = ""
+            try:
+                wor_leader_update_id = wor_leader_update_list['user_id'].split(',')
+            except:    
+                wor_leader_update_id =""
 
             for i in range(len(wor_leader_update_id)):
                 try:
@@ -225,8 +249,15 @@ def settings(request):
                     week_for_update.save()
                 except:
                     pass
-            wor_engager_update_week = wor_engager_update_list['week'].split(',')
-            wor_engager_update_id = wor_engager_update_list['user_id'].split(',')
+            
+            try:
+                wor_engager_update_week = wor_engager_update_list['week'].split(',')
+            except:
+                wor_engager_update_week = ""
+            try:
+                wor_engager_update_id = wor_engager_update_list['user_id'].split(',')
+            except:    
+                wor_engager_update_id =""
             for i in range(len(wor_engager_update_id)):
                 try:
                     week_for_update = WeekAttendanceRoleManager.objects.get(week_id = WOR_date.objects.get(week_number = wor_engager_update_week[i]))

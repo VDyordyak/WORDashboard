@@ -11,7 +11,7 @@ def attendance(request):
     week_list = WOR_date.objects.all()
     attendance_list = AttendanceManagerModel.objects.all()
     user_list = UserModel.objects.filter(groups = UserModel.objects.get(id = request.user.id).groups.first())
-
+    week_roles = WeekAttendanceRoleManager.objects.all()
     current_week = datetime.datetime.now().strftime('%U')
     if current_week[0] == "0":
         current_week = int(current_week) % 10
@@ -34,8 +34,13 @@ def attendance(request):
                     user_status = user_status_dictionary[id],
                 )
                 new_attendance.save()
-    week_roles = WeekAttendanceRoleManager.objects.all()
-    time.sleep(1)
+        return render(request, 'attendance-list.html', {
+        'attendances': attendance_list, 
+        'users': user_list, 
+        'week': current_week, 
+        'week_list' :  week_list,
+        'week_roles' : week_roles
+        })
     return render(request, 'attendance.html', {
         'attendances': attendance_list, 
         'users': user_list, 

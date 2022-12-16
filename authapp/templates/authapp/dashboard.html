@@ -6,51 +6,9 @@
     <link rel="stylesheet" type="text/css" href="{% static '/css/account.css' %}">
 {% endblock styles %}
 {% block content %}
-<style>
-    .more-settings{
-        display: flex;
-        justify-content: flex-end;
-        float: right;
-        position: relative;
-        width: 20%;
-    }
-    .more-settings .settings-dropdown {
-        display: none;
-    }
-    .more-settings .settings-dropdown.show{
-        display: flex;
-        z-index: 1;
-        top:0px;
-        left: 0px;
-        position: absolute;
-    }
-    .more-settings .settings-dropdown .setting-list{
-        list-style: none;
-        font-family: 'Roboto';
-        font-style: normal;
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 16px;
-        color: #34220D;
-        opacity: 0.7;
-        padding: 2px 0px;
-    }
-    .more-settings .settings-dropdown .setting-list .setting-item a{
-        text-decoration: none;
-        color: inherit;
-    }
-</style>
 <div class="headling">
-    <div class="more-settings">
-        <img class="more-settings-icon" src="{% static '/img/settings.png' %}">
-        <div class="settings-dropdown">
-            <ul class="setting-list">
-                {% csrf_token %}
-                <li class="setting-item meeting-start"><a href="">Become WOR leader</a> </li>
-            </ul>
-        </div>
-    </div>
     <h2 class="page-title">Settings</h2>
+    <h2>Hi, {{request.user.first_name}}</h2>
     <div class="content_tabs">
         <a href="#" class="active">Account setup</a>
         <a href="{% url 'authapp:settings' %}">Facilitator settings</a>
@@ -60,36 +18,4 @@
 <a href="{% url 'authapp:edit' %}" class="btn btn-primary">Edit Your Profile</a>
 <a href="{% url 'authapp:password_change' %}" class="btn btn-warning">Change your password</a>
 <hr>
-<script>
-    $(".more-settings-icon").click(function () {
-        $(".settings-dropdown").toggleClass("show");
-    });
-    $('.meeting-start').click(function(e){
-            e.preventDefault();
-            // Confirming meeting start
-            if (confirm("Are you sure about being WOR Leader?")) {
-                alert("You are WOR leader!");
-            } else {
-                return;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: '{% url "authapp:dashboard" %}',
-                data: {
-                    'operation':'start-metting',
-                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-                },
-                success: function(response) {
-                    // Success code
-                },
-                error : function(xhr,errmsg,err) {
-                    $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                        " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-                }
-
-            });
-        })
-</script>
 {% endblock content %}

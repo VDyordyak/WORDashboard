@@ -17,9 +17,10 @@ class UserModel(AbstractUser):
         ordering = ['first_name']
 
 class GroupAdmin(models.Model):
+    id = models.AutoField(primary_key=True)
     admin = models.ForeignKey(UserModel, on_delete=models.CASCADE, verbose_name="Group admin")
     group = models.ForeignKey(Group, blank=True, default="1", on_delete=models.CASCADE, verbose_name="Group")
-    group_time_zone = models.IntegerField(default="2", verbose_name="Week")
+    group_time_zone = models.IntegerField(default="2", verbose_name="Time zone")
 
 class Meta:
     permission =[( "edit_facilitators", "Can edit facilitators",)]

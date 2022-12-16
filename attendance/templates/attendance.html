@@ -41,63 +41,7 @@
         </table>
     </div>
     <div class="weeks">
-        <table class="carousel">
-            <tbody class="carouselContainer">
-                <tr >
-                    {% for week in week_list%}
-                        <td class="slides"><span>Week {{week.week_number}}</span><span><br>{{week.start_date|date:"m.d"}} - {{week.end_date|date:"m.d"}}</br></span></td>
-                    {% endfor%} 
-                </tr>
-                {% for user in users%}     
-                    <tr>
-                        {% for week in week_list%}
-                            <td class="slides">
-                                <!-- {% for attendance in attendances%}
-                                    {% if user.pk == attendance.person.pk and week.week_number == attendance.date.week_number %}
-                                        {% for week_role in week_roles%}
-                                            {% if week_role.wor_leader.pk == user.pk and week_role.week_id.week_number == week.week_number  %}
-                                                <div class="{{attendance.user_status}} leader"><span></span></div>
-                                            {% elif week_role.wor_engager.pk == user.pk and week_role.week_id.week_number == week.week_number  %}
-                                                <div class="{{attendance.user_status}} engager"><span></span></div>
-                                            {% elif week_role.week_id.week_number == week.week_number%}
-                                                <div class="{{attendance.user_status}}"><span></span></div>
-                                            {% endif %}
-                                        {% endfor%}   
-                                    {% endif %}
-                                {% endfor%} -->
-                                {% for week_role in week_roles%}
-                                    {% if week_role.wor_leader.pk == user.pk and week_role.week_id.week_number == week.week_number  %}
-                                        <div class="
-                                        {% for attendance in attendances%}
-                                            {% if user.pk == attendance.person.pk and week.week_number == attendance.date.week_number %}
-                                                {{attendance.user_status}}
-                                            {% endif %}
-                                        {% endfor%}   
-                                        leader"><span></span></div>
-                                    {% elif week_role.wor_engager.pk == user.pk and week_role.week_id.week_number == week.week_number  %}
-                                        <div class="
-                                        {% for attendance in attendances%}
-                                            {% if user.pk == attendance.person.pk and week.week_number == attendance.date.week_number %}
-                                                {{attendance.user_status}}
-                                            {% endif %}
-                                        {% endfor%} 
-                                        engager"><span></span></div>
-                                    {% elif week_role.week_id.week_number == week.week_number%}
-                                        <div class="
-                                        {% for attendance in attendances%}
-                                            {% if user.pk == attendance.person.pk and week.week_number == attendance.date.week_number %}
-                                                {{attendance.user_status}}
-                                            {% endif %}
-                                        {% endfor%}             
-                                        "><span></span></div>
-                                    {% endif %}
-                                {% endfor%} 
-                            </td>
-                        {% endfor%}
-                    </tr>        
-                {% endfor%}                   
-            </tbody>
-        </table>
+        {% include 'attendance-list.html' %}
     </div>
 </div>
 <!------------ Form POP-UP ------------->
@@ -170,7 +114,7 @@
 <script src="{% static '/js/attendance.js' %}"></script>
 <script>
     $(document).on('submit', '#attendance_update_form',function(e){
-        // e.preventDefault();
+        e.preventDefault();
         
         var user_selected_statuses_list = $(this).find("input[type='radio']:checked");
         var user_status_dictionary = {};
@@ -188,10 +132,11 @@
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 action: 'update'
             },
-            success:function(json){
+            success:function(response){
                 var element = document.getElementById("popup");
                 element.classList.remove("show");
                 document.body.style.overflowY = "scroll";
+                $(".weeks").html(response);
             },
             error : function(xhr,errmsg,err) {
                 $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
@@ -200,49 +145,6 @@
             }
         });
     });  
-
-    ////////////////// Carousel /////////////////
-    const carouselContainer = document.querySelector(".carouselContainer");  
-    const slides = document.querySelectorAll('.slides');  
-    const next = document.querySelector('#next');  
-    const prev = document.querySelector('#prev');  
-    let counter = 0;  
-    if ( ({{week}} -1) > 47){
-        counter = 47
-    } else {
-        counter = {{week}} -1
-    }
-    const size = slides[0].clientWidth +1;  
-    console.log(size);
-    carouselContainer.style.transform = 'translateX(' + (-size * counter)   + 'px';  
-    console.log(carouselContainer.style.transform);
-    next.addEventListener('click',()=>{  
-    if (counter>=47)return;  
-        carouselContainer.style.transition = 'transform 0.4s ease-in-out'; 
-        counter++;  
-        carouselContainer.style.transform = 'translateX(' + (-size * counter )  + 'px';  
-    });  
-    prev.addEventListener('click',()=>{  
-    if (counter<=0)return;  
-        carouselContainer.style.transition = 'transform 0.4s ease-in-out';  
-        counter--;  
-        carouselContainer.style.transform = 'translateX(' + (-size * counter ) + 'px';  
-    });  
-    carouselContainer.addEventListener('transitionend',()=>{  
-    console.log(slides[counter]);  
-    if(slides[counter].id ==='lastslide'){  
-        carouselContainer.style.transition = 'none';  
-        counter = slides.length - 2;      
-        carouselContainer.style.transform = 'translateX(' + (-size * counter ) + 'px';  
-    }  
-    });  
-    carouselContainer.addEventListener('transitionend',()=>{  
-    console.log(slides[counter]);  
-    if(slides[counter].id ==='firstslide'){  
-        carouselContainer.style.transition = 'none';  
-        counter = slides.length - counter;      
-        carouselContainer.style.transform = 'translateX(' + (-size * counter ) + 'px';  
-    }  
-    });
+    
 </script>
 {% endblock content %}
