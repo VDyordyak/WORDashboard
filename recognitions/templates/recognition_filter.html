@@ -120,7 +120,14 @@
         </div>
     {% endif%}
 {% endfor%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js" integrity="sha384-BnFYVbw3PHhz5qWXTCSL12MjPc3KxjdKPx7R4R5JjIzxFmYX267NDyJ9B/nZANdg" crossorigin="anonymous"></script>
+<script src="{% static '/js/jquery.click-firewords.js' %}"></script>
 <script>
+    $('.star_click').clickFireworks({
+        id: 'fireworks', // canvas id
+        appendTo: 'body', // append canvas to where, default is body
+        zIndex: 1000 // canvas z-index, make it higher than anything on the page
+    });
     //Updating recognition star using ajax
     $('.star_click').click(function(){
         $.ajax({
