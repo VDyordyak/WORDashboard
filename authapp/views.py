@@ -65,10 +65,11 @@ def agenda(request):
                     week_roles.wor_leader = request.user
                     week_roles_list = WeekAttendanceRoleManager.objects.filter( users_group = UserModel.objects.get(id = request.user.id).groups.first())
                     for week in week_roles_list:
-                        if week.week_id > current_week:
+                        if week.week_id.week_number > int(current_week):
                             if request.user == week.wor_leader:
                                 week.wor_leader = this_week_leader
                                 week.save()
+                                break
                     week_roles.save()
             context = {
                 "wor_leader_peresent": user_present(week_roles.wor_leader.pk),

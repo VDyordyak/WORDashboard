@@ -10,8 +10,8 @@ import datetime
 @login_required
 def improvements(request):
     improvement_create_form = ImprovementCreateForm(request.POST)
-    improvements_list = ImprovementsTaskManagerModel.objects.all()
-    user_profile_images = UserModel.objects.all()
+    improvements_list = ImprovementsTaskManagerModel.objects.filter(group =  UserModel.objects.get(id = request.user.id).groups.first())
+    user_profile_images = UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first())
     response_data = {}
 
     if request.method == "GET" and request.GET.get('action') == 'get_data':

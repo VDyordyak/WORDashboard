@@ -28,72 +28,70 @@
             <th>Status</th>
         </tr>
         {% for action in actions %}
-            {% if action.action_group in request.user.groups.all  %}
-                {% if forloop.counter <= 5  %}
-                    <tr id="action_content">
-                        <td class="date">{{action.creation_date|date:"d/M"}}</td>
-                        <td class="action_title">
-                            <a href="#" class="title_click" id="{{action.pk}}">{{action.issue_name}}</a>
-                        </td>
-                        <td class="action_text">{{action.action_text}}</td>
-                        <td class="action_solution">{{action.solution_text}}</td>
-                        <td class="members" id="members_for_{{action.pk}}">
-                            {% if action.assigned_user.all.count == group_members %}
-                                <div class="img-block all">
-                                    <img src="{% static '/img/all_users.svg' %}"" alt="All users">
-                                </div>
-                            {% else %}
-                                <div class="img-block">
-                                    {% for user in action.assigned_user.all %}
-                                        <img alt="{{user.first_name}} {{user.last_name}}" 
-                                            title="{{user.first_name}} {{user.last_name}}"
-                                            src="{{user.user_image.url}}">
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </td>
-                        <td class="date">{{action.deadline_date|date:"d/M"}}</td>
-                        <td class="status" id="{{action.pk}}">
-                            {% if action.action_status == 'draft' %}
-                                <img alt="In progress" title="In progress" id="1" src="{% static '/img/in_progress.svg' %}">
-                            {% elif action.action_status == 'completed' %}
-                                <img alt="Completed" title="Completed" id="2" src="{% static '/img/done.svg' %}">
-                            {% else %}
-                                <img alt="Canceled" title="Canceled" id="3" src="{% static '/img/cancel.svg' %}">
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr id="action_content" class="hiden" style="display: none;">
-                        <td class="date">{{action.creation_date|date:"d.m.Y"}}</td>
-                        <td class="action_title">
-                            <a href="#" class="title_click" id="{{action.pk}}">{{action.issue_name}}</a>
-                        </td>
-                        <td class="action_text">{{action.action_text}}</td>
-                        <td class="action_solution">{{action.solution_text}}</td>
-                        <td class="members" id="members_for_{{action.pk}}">
-                            {% if action.assigned_user.all.count == group_members %}
-                                <p> All </p>
-                            {% else %}
+            {% if forloop.counter <= 5  %}
+                <tr id="action_content">
+                    <td class="date">{{action.creation_date|date:"d/M"}}</td>
+                    <td class="action_title">
+                        <a href="#" class="title_click" id="{{action.pk}}">{{action.issue_name}}</a>
+                    </td>
+                    <td class="action_text">{{action.action_text}}</td>
+                    <td class="action_solution">{{action.solution_text}}</td>
+                    <td class="members" id="members_for_{{action.pk}}">
+                        {% if action.assigned_user.all.count == group_members %}
+                            <div class="img-block all">
+                                <img src="{% static '/img/all_users.svg' %}"" alt="All users">
+                            </div>
+                        {% else %}
+                            <div class="img-block">
                                 {% for user in action.assigned_user.all %}
                                     <img alt="{{user.first_name}} {{user.last_name}}" 
-                                         title="{{user.first_name}} {{user.last_name}}"
-                                         src="{{user.user_image.url}}">
+                                        title="{{user.first_name}} {{user.last_name}}"
+                                        src="{{user.user_image.url}}">
                                 {% endfor %}
-                            {% endif %}
-                        </td>
-                        <td class="date">{{action.deadline_date|date:"d.m.Y"}}</td>
-                        <td class="status">
-                            {% if action.action_status == 'draft' %}
-                                <img alt="In progress" title="In progress" src="{% static '/img/in_progress.svg' %}">
-                            {% elif action.action_status == 'completed' %}
-                                <img alt="Completed" title="Completed" src="{% static '/img/done.svg' %}">
-                            {% else %}
-                                <img alt="Cancel" title="Cancel" src="{% static '/img/cancel.svg' %}">
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endif %}
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td class="date">{{action.deadline_date|date:"d/M"}}</td>
+                    <td class="status" id="{{action.pk}}">
+                        {% if action.action_status == 'draft' %}
+                            <img alt="In progress" title="In progress" id="1" src="{% static '/img/in_progress.svg' %}">
+                        {% elif action.action_status == 'completed' %}
+                            <img alt="Completed" title="Completed" id="2" src="{% static '/img/done.svg' %}">
+                        {% else %}
+                            <img alt="Canceled" title="Canceled" id="3" src="{% static '/img/cancel.svg' %}">
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr id="action_content" class="hiden" style="display: none;">
+                    <td class="date">{{action.creation_date|date:"d.m.Y"}}</td>
+                    <td class="action_title">
+                        <a href="#" class="title_click" id="{{action.pk}}">{{action.issue_name}}</a>
+                    </td>
+                    <td class="action_text">{{action.action_text}}</td>
+                    <td class="action_solution">{{action.solution_text}}</td>
+                    <td class="members" id="members_for_{{action.pk}}">
+                        {% if action.assigned_user.all.count == group_members %}
+                            <p> All </p>
+                        {% else %}
+                            {% for user in action.assigned_user.all %}
+                                <img alt="{{user.first_name}} {{user.last_name}}" 
+                                        title="{{user.first_name}} {{user.last_name}}"
+                                        src="{{user.user_image.url}}">
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td class="date">{{action.deadline_date|date:"d.m.Y"}}</td>
+                    <td class="status">
+                        {% if action.action_status == 'draft' %}
+                            <img alt="In progress" title="In progress" src="{% static '/img/in_progress.svg' %}">
+                        {% elif action.action_status == 'completed' %}
+                            <img alt="Completed" title="Completed" src="{% static '/img/done.svg' %}">
+                        {% else %}
+                            <img alt="Cancel" title="Cancel" src="{% static '/img/cancel.svg' %}">
+                        {% endif %}
+                    </td>
+                </tr>
             {% endif %}
         {% endfor %}
     </table>
@@ -165,7 +163,6 @@
                                     </label>
                                 </li>
                                 {% for user in user_profile_list %}
-                                    {% if user.groups.first == request.user.groups.first %}
                                     <li>
                                         <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="assigned_user"/>
                                         <label for="{{user.pk}}">
@@ -176,7 +173,6 @@
                                             <span class="performer_surname">{{user.last_name}}</span> 
                                         </label>
                                     </li>
-                                    {% endif %}
                                 {% endfor %}         
                             </ul>
                         </div>
@@ -254,22 +250,20 @@
                         <div class="checkbox-dropdown">
                             <ul class="checkbox-dropdown-list">
                                 {% for user in user_profile_list %}
-                                    {% if user.groups.first == request.user.groups.first %}
-                                        <li>
-                                            <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="action_editing_assigned_user"
-                                            {% if user in action.assigned_user.all%}
-                                                checked
-                                            {% endif%}
-                                            >
-                                            <label for="{{user.pk}}">
-                                                <img alt="{{user.first_name}} {{user.last_name}}"
-                                                     title="{{user.first_name}} {{user.last_name}}"  
-                                                     src="{{user.user_image.url}}">
-                                                <span class="performer_name">{{user.first_name}}</span>
-                                                <span class="performer_surname">{{user.last_name}}</span>
-                                            </label>
-                                        </li>
-                                    {% endif %}
+                                    <li>
+                                        <input type="checkbox" id="{{user.pk}}" value="{{user.pk}}" name="action_editing_assigned_user"
+                                        {% if user in action.assigned_user.all%}
+                                            checked
+                                        {% endif%}
+                                        >
+                                        <label for="{{user.pk}}">
+                                            <img alt="{{user.first_name}} {{user.last_name}}"
+                                                    title="{{user.first_name}} {{user.last_name}}"  
+                                                    src="{{user.user_image.url}}">
+                                            <span class="performer_name">{{user.first_name}}</span>
+                                            <span class="performer_surname">{{user.last_name}}</span>
+                                        </label>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         </div>

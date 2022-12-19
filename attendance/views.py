@@ -11,7 +11,7 @@ def attendance(request):
     week_list = WOR_date.objects.all()
     attendance_list = AttendanceManagerModel.objects.all()
     user_list = UserModel.objects.filter(groups = UserModel.objects.get(id = request.user.id).groups.first())
-    week_roles = WeekAttendanceRoleManager.objects.all()
+    week_roles = WeekAttendanceRoleManager.objects.filter(users_group = UserModel.objects.get(id = request.user.id).groups.first())
     current_week = datetime.datetime.now().strftime('%U')
     if current_week[0] == "0":
         current_week = int(current_week) % 10

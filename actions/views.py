@@ -12,8 +12,8 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 @login_required(login_url='/login/')
 def actions(request):
-    action_list = ActionTaskManagerModel.objects.all()
-    user_profile_list = UserModel.objects.all()
+    action_list = ActionTaskManagerModel.objects.filter(action_group =  UserModel.objects.get(id = request.user.id).groups.first())
+    user_profile_list =  UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first())
     action_number = ActionTaskManagerModel.objects.filter(action_group =  UserModel.objects.get(id = request.user.id).groups.first()).count()
     response_data = {}
     group_members_count =  UserModel.objects.filter(groups =  UserModel.objects.get(id = request.user.id).groups.first()).count()
