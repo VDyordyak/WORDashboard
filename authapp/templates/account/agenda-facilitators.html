@@ -1,4 +1,26 @@
+{% load static %}
 <div class="facilitators">
+    <div class="more-settings">
+        {% if not wor_leader_peresent %}
+            {% if request.user == week_role.wor_engager %}
+                <img class="more-settings-icon" src="{% static '/img/settings.png' %}">
+                <div class="settings-dropdown">
+                    <ul class="setting-list">
+                        {% csrf_token %}
+                        <li class="setting-item meeting-start"><a href="">Become WOR leader</a> </li>
+                    </ul>
+                </div>
+            {% elif not wor_engager_peresent %}
+                <img class="more-settings-icon" src="{% static '/img/settings.png' %}">
+                <div class="settings-dropdown">
+                    <ul class="setting-list">
+                        {% csrf_token %}
+                        <li class="setting-item meeting-start"><a href="">Become WOR leader</a> </li>
+                    </ul>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
     <h2 class="page-title">This week's facilitator</h2>
     <div class="user_description" style="margin-bottom: 56px;">
         <div class="user_information_block">

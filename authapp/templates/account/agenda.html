@@ -7,12 +7,12 @@
 
 {% block content %}
 <style>
-    .more-settings{
+    .more-settings, .confetti-block{
         display: flex;
         justify-content: flex-end;
         float: right;
         position: relative;
-        width: 30%;
+        width: 45%;
     }
     .more-settings .settings-dropdown {
         display: none;
@@ -39,38 +39,18 @@
         text-decoration: none;
         color: inherit;
     }
-    .more-settings img{
-        width: 15px;
-        height: 15px;
+    .more-settings img, .confetti-block img{
+        width: 20px;
+        height: 20px;
     }
     .more-settings .confetti{
         margin-left: 15px;
     }
 </style>
 <div class="agenda_content">
-    <div class="more-settings">
-        {% if not wor_leader_peresent %}
-            {% if request.user == week_role.wor_engager %}
-                <img class="more-settings-icon" src="{% static '/img/settings.png' %}">
-                <div class="settings-dropdown">
-                    <ul class="setting-list">
-                        {% csrf_token %}
-                        <li class="setting-item meeting-start"><a href="">Become WOR leader</a> </li>
-                    </ul>
-                </div>
-            {% elif not wor_engager_peresent %}
-                <img class="more-settings-icon" src="{% static '/img/settings.png' %}">
-                <div class="settings-dropdown">
-                    <ul class="setting-list">
-                        {% csrf_token %}
-                        <li class="setting-item meeting-start"><a href="">Become WOR leader</a> </li>
-                    </ul>
-                </div>
-            {% endif %}
-        {% endif %}
+    <div class="confetti-block">
         <img class="confetti" onclick="toggleConfetti();" src="{% static '/img/confetti.jfif' %}" alt="">
     </div>
-
     <h2 class="page-title">Weekly operational review agenda</h2>
     <div class="agenda_body">
         <div class="agenda_description">
