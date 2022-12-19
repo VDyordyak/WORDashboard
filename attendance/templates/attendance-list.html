@@ -49,10 +49,10 @@
     var next = document.querySelector('#next');  
     var prev = document.querySelector('#prev');  
     var counter = 0;  
-    if ( ({{week}} -1) > 47){
+    if ( (parseInt("{{week}}") -1) > 47){
         counter = 47
     } else {
-        counter = {{week}} -1
+        counter = parseInt('{{week}}') -1
     }
     var size = slides[0].clientWidth +1;  
     console.log(size);

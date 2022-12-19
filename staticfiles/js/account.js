@@ -44,7 +44,7 @@ $( document ).ready(function() {
         var wor_leader_position = $(wor_leader_personal_data).children(".position").html();
         
         $(wor_leader_image).html($(wor_leader_current_image));
-        $(wor_leader_user_information).children(".user_name").html(wor_leader_first_name + wor_leader_last_name);
+        $(wor_leader_user_information).children(".user_name").html(wor_leader_first_name + " "+ wor_leader_last_name);
         $(wor_leader_user_information).children(".user_position").html(wor_leader_position);
         $(wor_leader_user_personal_data).children(".data").html(wor_leader_email);
         /////////// WOR ENGAGER /////////////////
@@ -64,7 +64,7 @@ $( document ).ready(function() {
         var wor_engager_position = $(wor_engager_personal_data).children(".position").html();
 
         $(wor_engager_image).html($(wor_engager_current_image));
-        $(wor_engager_user_information).children(".user_name").html(wor_engager_first_name + wor_engager_last_name);
+        $(wor_engager_user_information).children(".user_name").html(wor_engager_first_name +" " + wor_engager_last_name);
         $(wor_engager_user_information).children(".user_position").html(wor_engager_position);
         $(wor_engager_user_personal_data).children(".data").html(wor_engager_email);
 
