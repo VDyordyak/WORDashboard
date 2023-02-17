@@ -1,0 +1,14 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Password reset on 127.0.0.1:7000
+From: webmaster@localhost
+To: vasyl.dordiak@ua.nestle.com
+Date: Fri, 17 Feb 2023 08:08:02 -0000
+Message-ID: 
+ <167662128270.4792.7594325346268896908@UA15-1LQDH5A.EUC.nestle.com>
+
+Someone asked for password reset for email vasyl.dordiak@ua.nestle.com.Follow the Link below
+http://127.0.0.1:7000{% url "authapp:password_reset_confirm"
+uidb64=uid token=token %}
+-------------------------------------------------------------------------------
